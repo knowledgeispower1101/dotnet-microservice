@@ -28,11 +28,15 @@ services:
     container_name: ecommerce
     ports:
       - "${ECOMMERCE_PORT:-5001}:8080"
+    depends_on:
+      postgres-ecommerce:
+        condition: service_healthy
     networks:
       - app-network
     environment:
       - ASPNETCORE_ENVIRONMENT=${ECOMMERCE_ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres-ecommerce;Port=5432;Database=ecommerce_db;Username=ecommerce_user;Password=ecommerce_pass
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
@@ -64,6 +68,32 @@ services:
       retries: 3
       start_period: 40s
 
+  # =========================
+  # PostgreSQL Database for Ecommerce
+  # =========================
+  postgres-ecommerce:
+    image: postgres:16-alpine
+    container_name: postgres-ecommerce
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ecommerce_db
+      POSTGRES_USER: ecommerce_user
+      POSTGRES_PASSWORD: ecommerce_pass
+    volumes:
+      - postgres-ecommerce-data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ecommerce_user -d ecommerce_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  postgres-ecommerce-data:
