@@ -4,7 +4,7 @@ namespace Ecommerce.Services;
 
 public interface ICategoryService
 {
-    Task<IEnumerable<Category>> GetAllAsync();
+    Task<IEnumerable<Category>> GetRootCategories();
     Task<Category?> GetByIdAsync(Guid id);
     Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId);
     Task<Category> CreateAsync(Category category);

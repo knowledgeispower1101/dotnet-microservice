@@ -6,19 +6,14 @@ namespace Ecommerce.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class CategoryController : ControllerBase
+public class CategoryController(ICategoryService categoryService) : ControllerBase
 {
-    private readonly ICategoryService _categoryService;
-
-    public CategoryController(ICategoryService categoryService)
-    {
-        _categoryService = categoryService;
-    }
+    private readonly ICategoryService _categoryService = categoryService;
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Category>>> GetAll()
+    public async Task<ActionResult<IEnumerable<Category>>> GetMenuCategories()
     {
-        var categories = await _categoryService.GetAllAsync();
+        var categories = await _categoryService.GetRootCategories();
         return Ok(categories);
     }
 

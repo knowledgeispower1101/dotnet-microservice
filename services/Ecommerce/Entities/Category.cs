@@ -22,14 +22,14 @@ public class Category
     public string? IconUrl { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-    
+
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
     // Navigation properties
     [ForeignKey("ParentId")]
     public Category? ParentCategory { get; set; }
 
-    public ICollection<Category> ChildCategories { get; set; } = new List<Category>();
+    public ICollection<Category> ChildCategories { get; set; } = [];
 
-    public ICollection<Product> Products { get; set; } = new List<Product>();
+    public ICollection<Product> Products { get; set; } = [];
 }

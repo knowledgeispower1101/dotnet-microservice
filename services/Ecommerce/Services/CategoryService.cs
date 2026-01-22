@@ -1,24 +1,36 @@
+using System.Text.Json;
 using Ecommerce.Data;
 using Ecommerce.Entities;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 namespace Ecommerce.Services;
 
-public class CategoryService : ICategoryService
+public class CategoryService(AppDbContext context, IConnectionMultiplexer redis) : ICategoryService
 {
-    private readonly AppDbContext _context;
+    private const string CacheKey = "category:menu";
 
-    public CategoryService(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
+    private readonly IDatabase _cache = redis.GetDatabase();
 
-    public async Task<IEnumerable<Category>> GetAllAsync()
+    public async Task<IEnumerable<Category>> GetRootCategories()
     {
-        return await _context.Categories
-            .Include(c => c.ParentCategory)
-            .Include(c => c.ChildCategories)
+        var cached = await _cache.StringGetAsync(CacheKey);
+        if (!cached.IsNullOrEmpty)
+        {
+            return JsonSerializer.Deserialize<List<Category>>(cached!)!;
+        }
+        var categories = await _context.Categories
+            .Where(c => c.ParentCategory == null)
             .ToListAsync();
+
+
+        await _cache.StringSetAsync(
+                        CacheKey,
+                        JsonSerializer.Serialize(categories),
+                        TimeSpan.FromMinutes(60 * 24)
+        );
+        return categories;
     }
 
     public async Task<Category?> GetByIdAsync(Guid id)

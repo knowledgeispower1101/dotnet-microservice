@@ -12,4 +12,5 @@ public interface IProductService
     Task<Product?> UpdateAsync(Guid id, Product product);
     Task<bool> DeleteAsync(Guid id);
     Task<int> GetTotalCountAsync();
+    Task<List<string>> GetCategoryTreeByProductId(Guid productId);
 }

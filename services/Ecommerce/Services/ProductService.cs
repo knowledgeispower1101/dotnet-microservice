@@ -4,14 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Ecommerce.Services;
 
-public class ProductService : IProductService
+public class ProductService(AppDbContext context) : IProductService
 {
-    private readonly AppDbContext _context;
-
-    public ProductService(AppDbContext context)
-    {
-        _context = context;
-    }
+    private readonly AppDbContext _context = context;
 
     public async Task<IEnumerable<Product>> GetAllAsync(int page = 1, int pageSize = 20)
     {
@@ -57,7 +52,7 @@ public class ProductService : IProductService
         product.UpdatedAt = DateTime.UtcNow;
 
         _context.Products.Add(product);
-        
+
         // Create initial inventory entry
         var inventory = new Inventory
         {
@@ -103,5 +98,10 @@ public class ProductService : IProductService
     public async Task<int> GetTotalCountAsync()
     {
         return await _context.Products.CountAsync();
+    }
+
+    public Task<List<string>> GetCategoryTreeByProductId(Guid productId)
+    {
+        throw new NotImplementedException();
     }
 }

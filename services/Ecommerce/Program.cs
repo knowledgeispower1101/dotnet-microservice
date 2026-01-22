@@ -1,6 +1,7 @@
 using Ecommerce.Data;
 using Ecommerce.Services;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")).UseSnakeCaseNamingConvention();
 }
 );
+
+builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var redisConfig = configuration.GetSection("Redis");
+
+    var options = ConfigurationOptions.Parse(redisConfig["Connection"]!);
+    options.AbortOnConnectFail = false;
+
+    return ConnectionMultiplexer.Connect(options);
+});
 
 // Register services
 builder.Services.AddScoped<ICategoryService, CategoryService>();
