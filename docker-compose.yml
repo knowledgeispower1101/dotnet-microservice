@@ -37,6 +37,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ECOMMERCE_ASPNETCORE_ENVIRONMENT:-Development}
       - ASPNETCORE_URLS=http://+:8080
       - ConnectionStrings__DefaultConnection=Host=postgres-ecommerce;Port=5432;Database=ecommerce_db;Username=ecommerce_user;Password=ecommerce_pass
+      - Redis__Connection=redis:6379
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
@@ -90,6 +91,26 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
+  redis:
+    image: redis:7
+    container_name: product-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app-network
+    restart: unless-stopped
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redis-insight
+    ports:
+      - "5540:5540"
+    depends_on:
+      - redis
+    networks:
+      - app-network
 
 networks:
   app-network:
@@ -97,3 +118,4 @@ networks:
 
 volumes:
   postgres-ecommerce-data:
+  redis_data:

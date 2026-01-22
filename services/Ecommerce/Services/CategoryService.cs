@@ -37,7 +37,6 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
     {
         return await _context.Categories
             .Include(c => c.ParentCategory)
-            .Include(c => c.ChildCategories)
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
@@ -46,7 +45,6 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
     {
         return await _context.Categories
             .Where(c => c.ParentId == parentId)
-            .Include(c => c.ChildCategories)
             .ToListAsync();
     }
 

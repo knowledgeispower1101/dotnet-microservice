@@ -10,7 +10,7 @@ export interface Category {
 
 export const categoryApi = {
   getMenu: async (): Promise<Category[]> => {
-    const res = await api.get('/categories/menu');
+    const res = await api.get('/ecommerce/category');
     return res.data.data;
   },
   getCategoryTree: async ({ id }: { id: number }): Promise<Category[]> => {
