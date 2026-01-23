@@ -2,6 +2,7 @@ using System.Text.Json;
 using Ecommerce.Data;
 using Ecommerce.Entities;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using StackExchange.Redis;
 
 namespace Ecommerce.Services;
@@ -84,5 +85,27 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
         _context.Categories.Remove(category);
         await _context.SaveChangesAsync();
         return true;
+    }
+
+    public async Task<ICollection<CategoryRecord>> GetCategoriesByParentId(Guid id)
+    {
+        const string sql = """
+        WITH RECURSIVE category_tree AS (
+            SELECT id, name
+            FROM categories
+            WHERE id = @id
+
+            UNION ALL
+
+            SELECT c.id, c.name
+            FROM categories c
+            INNER JOIN category_tree ct ON c.parent_id = ct.id
+        )
+        SELECT * FROM category_tree;
+    """;
+
+        return await _context.Database
+            .SqlQueryRaw<CategoryRecord>(sql, new NpgsqlParameter("id", id))
+            .ToListAsync();
     }
 }

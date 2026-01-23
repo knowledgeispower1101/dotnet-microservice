@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CarouselProps<T> {
@@ -11,7 +11,7 @@ interface CarouselProps<T> {
   showArrows?: boolean;
 }
 
-export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, gap = 16, showDots = true, showArrows = true }: CarouselProps<T>) => {
+export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, gap = 16, showArrows = true }: CarouselProps<T>) => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
 
   const itemsPerPage: number = itemsPerRow * rows;
@@ -25,13 +25,15 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
     setCurrentIndex((prev) => (prev - 1 < 0 ? totalPages - 1 : prev - 1));
   };
 
-  const visibleItems: T[] = items.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage);
-
+  const visibleItems: T[] = useMemo(
+    () => items.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage),
+    [items, currentIndex, itemsPerPage]
+  );
+  
   return (
     <div className="w-full">
       <div className="relative px-12">
-        {/* Previous Button */}
-        {showArrows && totalPages > 1 && (
+        {showArrows && totalPages > 1 && currentIndex + 1 > 1 && (
           <button
             onClick={prevSlide}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 rounded-full p-2 shadow-lg transition-all"
@@ -41,7 +43,6 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
           </button>
         )}
 
-        {/* Carousel Content */}
         <div
           className="grid transition-all duration-300"
           style={{
@@ -54,8 +55,7 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
           ))}
         </div>
 
-        {/* Next Button */}
-        {showArrows && totalPages > 1 && (
+        {showArrows && totalPages > 1 && currentIndex + 1 < totalPages && (
           <button
             onClick={nextSlide}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 rounded-full p-2 shadow-lg transition-all"
@@ -66,8 +66,7 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
         )}
       </div>
 
-      {/* Dots Indicator */}
-      {showDots && totalPages > 1 && (
+      {/* {showDots && totalPages > 1 && (
         <div className="flex justify-center gap-2 mt-6">
           {Array.from({ length: totalPages }).map((_, idx) => (
             <button
@@ -78,7 +77,7 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
             />
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 };

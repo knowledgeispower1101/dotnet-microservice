@@ -1,20 +1,18 @@
 import { api } from '@/lib';
 
 export interface Category {
-  id: number;
+  id: string;
   name: string;
-  level: number;
-  is_leaf: boolean;
-  image_key: string;
+  iconUrl: string;
 }
 
 export const categoryApi = {
   getMenu: async (): Promise<Category[]> => {
     const res = await api.get('/ecommerce/category');
-    return res.data.data;
+    return res.data;
   },
-  getCategoryTree: async ({ id }: { id: number }): Promise<Category[]> => {
-    const res = await api.get(`/categories/tree/by-product/${id}`);
-    return res.data.data;
+  getCategoryChildren: async ({ id }: { id: string }): Promise<Category[]> => {
+    const res = await api.get(`/ecommerce/category/${id}/children`);
+    return res.data;
   },
 };

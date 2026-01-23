@@ -1,47 +1,54 @@
-import { Container } from '@/components';
-import { Link, useParams } from 'react-router-dom';
+import { Container, DividerLayout, Loading } from '@/components';
+import { LeftSideCategory, RightSideCategory } from './components';
+import { useParams } from 'react-router-dom';
+import { useGetCategoriesChildren } from '@/hooks';
 
 const CategoryPage = () => {
-  const { id } = useParams<{ id: string }>();
+  const handleChangeCategory = (id: string) => {
+    //get products base on category id and pass to right side category
+    console.log(id);
+  };
+  const params = useParams<{ id?: string }>();
+  const id = params.id ?? '';
+  const { data: categoryChildren, isLoading, error } = useGetCategoriesChildren({
+    id,
+  });
+  
+  if (isLoading) return <Loading />;
+  if (error) {
+    return (
+      <Container>
+        <div className="flex flex-col items-center justify-center min-h-96 gap-4">
+          <p className="text-red-500 text-lg">Failed to load categories</p>
+          <p className="text-gray-600 text-sm">Please try again later</p>
+        </div>
+      </Container>
+    );
+  }
+  if (!categoryChildren || categoryChildren.length === 0) {
+    return (
+      <Container>
+        <div className="flex flex-col items-center justify-center min-h-96">
+          <p className="text-gray-600">No categories found</p>
+        </div>
+      </Container>
+    );
+  }
   return (
     <div>
       <Container>
-        <div>BannerSimple</div>
+        <div className="bg-[url('/src/assets/bg-sale-cate.png')] bg-contain h-90 bg-no-repeat mt-8"></div>
         <div>Carousel</div>
-        <div>curated-collection {id}</div>
+        <div>curated-collection</div>
       </Container>
-      <Container className="flex">
-        <div className="flex-none basis-47.5 min-w-0 mr-5 mb-5">
-          <div>
-            <Link
-              to="/"
-              className="flex items-center h-12.5 leading-12.5 mb-2.5 text-[1rem] font-bold capitalize text-[#000c] border-b border-[#0000000d] no-underline"
-            >
-              <svg viewBox="0 0 12 10" className="w-3 mr-2.5">
-                <g fillRule="evenodd" stroke="none" strokeWidth="1">
-                  <g transform="translate(-373 -208)">
-                    <g transform="translate(155 191)">
-                      <g transform="translate(218 17)">
-                        <path d="m0 2h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z"></path>
-                        <path d="m0 6h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z"></path>
-                        <path d="m0 10h2v-2h-2zm4 0h7.1519633v-2h-7.1519633z"></path>
-                      </g>
-                    </g>
-                  </g>
-                </g>
-              </svg>
-              Tất cả Danh mục
-            </Link>
-          </div>
-        </div>
-        <div className="flex-1 min-w-0">
-          <section>
-            <fieldset className="flex items-center justify-between bg-black/5 rounded-sm px-5 py-3 font-normal">
-              <div className="text-[#555] mr-1.25">Sắp xếp theo</div>
-            </fieldset>
-          </section>
-        </div>
-      </Container>
+      <DividerLayout>
+        <DividerLayout.LeftSide>
+          <LeftSideCategory data={categoryChildren ?? []} handleChangeCategory={handleChangeCategory} />
+        </DividerLayout.LeftSide>
+        <DividerLayout.RightSide>
+          <RightSideCategory />
+        </DividerLayout.RightSide>
+      </DividerLayout>
     </div>
   );
 };
