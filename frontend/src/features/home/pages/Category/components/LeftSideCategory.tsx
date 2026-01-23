@@ -1,13 +1,11 @@
 import { CategoryIcon } from '@/assets';
-import { useGetCategoriesChildren } from '@/hooks';
+import type { Category } from '@/services';
 import { Link } from 'react-router-dom';
-
-const LeftSideCategory = ({ id }: { id: string }) => {
-  const { data, isLoading, error } = useGetCategoriesChildren({ id });
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error</div>;
-  if (!data || data.length === 0) return null;
+interface LeftSideCategoryInterface {
+  handleChangeCategory: (id: string) => void;
+  data: Category[];
+}
+const LeftSideCategory = ({ handleChangeCategory, data }: LeftSideCategoryInterface) => {
   const [firstItem, ...restItems] = data;
 
   return (
@@ -28,9 +26,9 @@ const LeftSideCategory = ({ id }: { id: string }) => {
         {/* 👉 Các item còn lại */}
         <div className="flex flex-col">
           {restItems.map((item) => (
-            <Link key={item.id} to={`/category/${item.id}`} className="pt-2 pb-2 pr-2.5 pl-3">
+            <div key={item.id} onClick={() => handleChangeCategory(item.id)} className="pt-2 pb-2 pr-2.5 pl-3">
               {item.name}
-            </Link>
+            </div>
           ))}
         </div>
       </div>

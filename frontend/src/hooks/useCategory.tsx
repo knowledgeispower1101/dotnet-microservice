@@ -8,3 +8,10 @@ export const useGetCategoriesChildren = ({ id }: { id: string }) => {
     enabled: !!id,
   });
 };
+
+export const useGetCategoriesMenu = () => {
+  return useQuery({
+    queryKey: ['categories', 'menu'],
+    queryFn: () => categoryApi.getMenu(),
+  });
+};
