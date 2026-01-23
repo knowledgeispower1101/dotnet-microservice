@@ -10,11 +10,30 @@ const CategoryPage = () => {
   };
   const params = useParams<{ id?: string }>();
   const id = params.id ?? '';
-  const { data: categoryChildren, isLoading } = useGetCategoriesChildren({
+  const { data: categoryChildren, isLoading, error } = useGetCategoriesChildren({
     id,
   });
+  
   if (isLoading) return <Loading />;
-  if (!categoryChildren) return null;
+  if (error) {
+    return (
+      <Container>
+        <div className="flex flex-col items-center justify-center min-h-96 gap-4">
+          <p className="text-red-500 text-lg">Failed to load categories</p>
+          <p className="text-gray-600 text-sm">Please try again later</p>
+        </div>
+      </Container>
+    );
+  }
+  if (!categoryChildren || categoryChildren.length === 0) {
+    return (
+      <Container>
+        <div className="flex flex-col items-center justify-center min-h-96">
+          <p className="text-gray-600">No categories found</p>
+        </div>
+      </Container>
+    );
+  }
   return (
     <div>
       <Container>

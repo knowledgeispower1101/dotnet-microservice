@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CarouselProps<T> {
@@ -25,7 +25,11 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
     setCurrentIndex((prev) => (prev - 1 < 0 ? totalPages - 1 : prev - 1));
   };
 
-  const visibleItems: T[] = items.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage);
+  const visibleItems: T[] = useMemo(
+    () => items.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage),
+    [items, currentIndex, itemsPerPage]
+  );
+  
   return (
     <div className="w-full">
       <div className="relative px-12">

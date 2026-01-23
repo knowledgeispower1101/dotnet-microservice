@@ -1,17 +1,16 @@
 import { Search } from 'lucide-react';
-import { useState } from 'react';
-const FAKE_OPTIONS = [
-  'iPhone 15 Pro Max',
-  'Ốp lưng iPhone',
-  'Tai nghe Bluetooth',
-  'Sạc nhanh 20W',
-  'Cáp sạc Type C',
-  'Samsung Galaxy S24',
-  'AirPods Pro',
-];
+import { useState, useMemo } from 'react';
+import { useDebounce } from '@/hooks';
+import { SEARCH_SUGGESTIONS } from '@/constants';
+
 const SearchSection = () => {
   const [value, setValue] = useState('');
-  const filteredOptions = FAKE_OPTIONS.filter((item) => item.toLowerCase().includes(value.toLowerCase()));
+  const debouncedValue = useDebounce(value, 300);
+  
+  const filteredOptions = useMemo(
+    () => SEARCH_SUGGESTIONS.filter((item) => item.toLowerCase().includes(debouncedValue.toLowerCase())),
+    [debouncedValue]
+  );
 
   return (
     <div className="relative w-210">
@@ -27,7 +26,7 @@ const SearchSection = () => {
         </button>
       </form>
 
-      {value && filteredOptions.length > 0 && (
+      {debouncedValue && filteredOptions.length > 0 && (
         <ul className="absolute top-11 left-0 w-full bg-white shadow-lg border border-gray-200 z-50">
           {filteredOptions.map((item) => (
             <li key={item} onClick={() => setValue(item)} className="px-3 py-2 text-sm cursor-pointer hover:bg-gray-100">
