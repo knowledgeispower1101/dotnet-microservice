@@ -10,4 +10,7 @@ public interface ICategoryService
     Task<Category> CreateAsync(Category category);
     Task<Category?> UpdateAsync(Guid id, Category category);
     Task<bool> DeleteAsync(Guid id);
+    Task<ICollection<CategoryRecord>> GetCategoriesByParentId(Guid id);
 }
+
+public record CategoryRecord(Guid Id, string Name);

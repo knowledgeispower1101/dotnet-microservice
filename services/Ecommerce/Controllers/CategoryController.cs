@@ -66,4 +66,11 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
 
         return NoContent();
     }
+
+    [HttpGet("{id}/children")]
+    public async Task<IActionResult> GetChildrenCategory(Guid id)
+    {
+        var result = await _categoryService.GetCategoriesByParentId(id);
+        return Ok(result);
+    }
 }

@@ -3,8 +3,6 @@ import { api } from '@/lib';
 export interface Category {
   id: number;
   name: string;
-  level: number;
-  is_leaf: boolean;
   image_key: string;
 }
 
@@ -13,8 +11,8 @@ export const categoryApi = {
     const res = await api.get('/ecommerce/category');
     return res.data.data;
   },
-  getCategoryTree: async ({ id }: { id: number }): Promise<Category[]> => {
-    const res = await api.get(`/categories/tree/by-product/${id}`);
-    return res.data.data;
+  getCategoryChildren: async ({ id }: { id: string }): Promise<Category[]> => {
+    const res = await api.get(`/ecommerce/category/${id}/children`);
+    return res.data;
   },
 };
