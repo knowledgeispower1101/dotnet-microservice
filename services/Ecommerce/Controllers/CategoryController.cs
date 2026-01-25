@@ -1,11 +1,11 @@
 using Ecommerce.Entities;
-using Ecommerce.Services;
+using Ecommerce.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("category")]
 public class CategoryController(ICategoryService categoryService) : ControllerBase
 {
     private readonly ICategoryService _categoryService = categoryService;
@@ -13,25 +13,17 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Category>>> GetMenuCategories()
     {
-        var categories = await _categoryService.GetRootCategories();
-        return Ok(categories);
+        return Ok(await _categoryService.GetRootCategories());
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Category>> GetById(Guid id)
+    public async Task<ActionResult<Category>> GetById(int id)
     {
         var category = await _categoryService.GetByIdAsync(id);
         if (category == null)
             return NotFound(new { message = "Category not found" });
 
         return Ok(category);
-    }
-
-    [HttpGet("parent/{parentId?}")]
-    public async Task<ActionResult<IEnumerable<Category>>> GetByParentId(Guid? parentId)
-    {
-        var categories = await _categoryService.GetByParentIdAsync(parentId);
-        return Ok(categories);
     }
 
     [HttpPost]
@@ -45,7 +37,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Category>> Update(Guid id, [FromBody] Category category)
+    public async Task<ActionResult<Category>> Update(int id, [FromBody] Category category)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -58,9 +50,9 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(int id)
     {
-        var deleted = await _categoryService.DeleteAsync(id);
+        bool deleted = await _categoryService.DeleteAsync(id);
         if (!deleted)
             return NotFound(new { message = "Category not found" });
 
@@ -68,7 +60,7 @@ public class CategoryController(ICategoryService categoryService) : ControllerBa
     }
 
     [HttpGet("{id}/children")]
-    public async Task<IActionResult> GetChildrenCategory(Guid id)
+    public async Task<IActionResult> GetChildrenCategory(int id)
     {
         var result = await _categoryService.GetCategoriesByParentId(id);
         return Ok(result);

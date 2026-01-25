@@ -1,17 +1,17 @@
 using Ecommerce.Entities;
-using Ecommerce.Services;
+using Ecommerce.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("inventory")]
 public class InventoryController(IInventoryService inventoryService) : ControllerBase
 {
     private readonly IInventoryService _inventoryService = inventoryService;
 
     [HttpGet("{productId}")]
-    public async Task<ActionResult<Inventory>> GetByProductId(Guid productId)
+    public async Task<ActionResult<Inventory>> GetByProductId(int productId)
     {
         var inventory = await _inventoryService.GetByProductIdAsync(productId);
         if (inventory == null)
@@ -21,7 +21,7 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
     }
 
     [HttpPut("{productId}/quantity")]
-    public async Task<ActionResult<Inventory>> UpdateQuantity(Guid productId, [FromBody] UpdateQuantityRequest request)
+    public async Task<ActionResult<Inventory>> UpdateQuantity(int productId, [FromBody] UpdateQuantityRequest request)
     {
         if (request.Quantity < 0)
             return BadRequest(new { message = "Quantity cannot be negative" });
@@ -34,7 +34,7 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
     }
 
     [HttpPost("{productId}/reserve")]
-    public async Task<ActionResult> ReserveStock(Guid productId, [FromBody] ReserveStockRequest request)
+    public async Task<ActionResult> ReserveStock(int productId, [FromBody] ReserveStockRequest request)
     {
         if (request.Quantity <= 0)
             return BadRequest(new { message = "Quantity must be greater than zero" });
@@ -47,7 +47,7 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
     }
 
     [HttpPost("{productId}/release")]
-    public async Task<ActionResult> ReleaseStock(Guid productId, [FromBody] ReleaseStockRequest request)
+    public async Task<ActionResult> ReleaseStock(int productId, [FromBody] ReleaseStockRequest request)
     {
         if (request.Quantity <= 0)
             return BadRequest(new { message = "Quantity must be greater than zero" });
@@ -60,7 +60,7 @@ public class InventoryController(IInventoryService inventoryService) : Controlle
     }
 
     [HttpGet("{productId}/check")]
-    public async Task<ActionResult<object>> CheckAvailability(Guid productId, [FromQuery] int quantity)
+    public async Task<ActionResult<object>> CheckAvailability(int productId, [FromQuery] int quantity)
     {
         if (quantity <= 0)
             return BadRequest(new { message = "Quantity must be greater than zero" });

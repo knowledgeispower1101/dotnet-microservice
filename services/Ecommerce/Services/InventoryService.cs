@@ -1,6 +1,7 @@
 using Ecommerce.Data;
 using Ecommerce.Entities;
 using Ecommerce.Services.Exception;
+using Ecommerce.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 
@@ -10,41 +11,38 @@ public class InventoryService(AppDbContext context) : IInventoryService
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<Inventory?> GetByProductIdAsync(Guid productId)
+    public async Task<Inventory?> GetByProductIdAsync(int productId)
     {
         return await _context.Inventories
             .Include(i => i.Product)
             .FirstOrDefaultAsync(i => i.ProductId == productId);
     }
 
-    public async Task<Inventory?> UpdateQuantityAsync(Guid productId, int quantity)
+    public async Task<Inventory?> UpdateQuantityAsync(int productId, int quantity)
     {
         var inventory = await _context.Inventories
             .FirstOrDefaultAsync(i => i.ProductId == productId);
 
         if (inventory == null)
         {
-            // Create new inventory if doesn't exist
             inventory = new Inventory
             {
                 ProductId = productId,
                 Quantity = quantity,
                 ReservedQuantity = 0,
-                UpdatedAt = DateTime.UtcNow
             };
             _context.Inventories.Add(inventory);
         }
         else
         {
             inventory.Quantity = quantity;
-            inventory.UpdatedAt = DateTime.UtcNow;
         }
 
         await _context.SaveChangesAsync();
         return inventory;
     }
 
-    public async Task<bool> ReserveStockAsync(Guid productId, int quantity)
+    public async Task<bool> ReserveStockAsync(int productId, int quantity)
     {
         var inventory = await _context.Inventories
             .FirstOrDefaultAsync(i => i.ProductId == productId);
@@ -53,13 +51,12 @@ public class InventoryService(AppDbContext context) : IInventoryService
             return false;
 
         inventory.ReservedQuantity += quantity;
-        inventory.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         return true;
     }
 
-    public async Task<bool> ReleaseStockAsync(Guid productId, int quantity)
+    public async Task<bool> ReleaseStockAsync(int productId, int quantity)
     {
 
         const string sql = """
@@ -84,7 +81,7 @@ public class InventoryService(AppDbContext context) : IInventoryService
         return affected == 1;
     }
 
-    public async Task<bool> CheckAvailabilityAsync(Guid productId, int quantity)
+    public async Task<bool> CheckAvailabilityAsync(int productId, int quantity)
     {
         var inventory = await _context.Inventories
             .FirstOrDefaultAsync(i => i.ProductId == productId);

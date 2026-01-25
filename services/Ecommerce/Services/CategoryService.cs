@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Ecommerce.Data;
 using Ecommerce.Entities;
+using Ecommerce.Services.IService;
 using Microsoft.EntityFrameworkCore;
 using Npgsql;
 using StackExchange.Redis;
@@ -21,6 +22,11 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
         {
             return JsonSerializer.Deserialize<List<Category>>(cached!)!;
         }
+        /*
+           SELECT *
+           FROM categories c
+           WHERE c.parent_category = NULL;
+        */
         var categories = await _context.Categories
             .Where(c => c.ParentCategory == null)
             .ToListAsync();
@@ -34,33 +40,24 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
         return categories;
     }
 
-    public async Task<Category?> GetByIdAsync(Guid id)
+    public async Task<Category?> GetByIdAsync(int id)
     {
         return await _context.Categories
-            .Include(c => c.ParentCategory)
             .Include(c => c.Products)
             .FirstOrDefaultAsync(c => c.Id == id);
     }
 
-    public async Task<IEnumerable<Category>> GetByParentIdAsync(Guid? parentId)
-    {
-        return await _context.Categories
-            .Where(c => c.ParentId == parentId)
-            .ToListAsync();
-    }
+
 
     public async Task<Category> CreateAsync(Category category)
     {
-        category.Id = Guid.NewGuid();
-        category.CreatedAt = DateTime.UtcNow;
-        category.UpdatedAt = DateTime.UtcNow;
 
         _context.Categories.Add(category);
         await _context.SaveChangesAsync();
         return category;
     }
 
-    public async Task<Category?> UpdateAsync(Guid id, Category category)
+    public async Task<Category?> UpdateAsync(int id, Category category)
     {
         var existing = await _context.Categories.FindAsync(id);
         if (existing == null)
@@ -70,13 +67,12 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
         existing.Description = category.Description;
         existing.ParentId = category.ParentId;
         existing.IconUrl = category.IconUrl;
-        existing.UpdatedAt = DateTime.UtcNow;
 
         await _context.SaveChangesAsync();
         return existing;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(int id)
     {
         var category = await _context.Categories.FindAsync(id);
         if (category == null)
@@ -87,7 +83,7 @@ public class CategoryService(AppDbContext context, IConnectionMultiplexer redis)
         return true;
     }
 
-    public async Task<ICollection<CategoryRecord>> GetCategoriesByParentId(Guid id)
+    public async Task<ICollection<CategoryRecord>> GetCategoriesByParentId(int id)
     {
         const string sql = """
         WITH RECURSIVE category_tree AS (

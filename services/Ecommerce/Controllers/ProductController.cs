@@ -1,38 +1,17 @@
 using Ecommerce.Entities;
-using Ecommerce.Services;
+using Ecommerce.Services.IService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class ProductController : ControllerBase
+[Route("product")]
+public class ProductController(IProductService productService) : ControllerBase
 {
-    private readonly IProductService _productService;
-
-    public ProductController(IProductService productService)
-    {
-        _productService = productService;
-    }
-
-    [HttpGet]
-    public async Task<ActionResult<object>> GetAll([FromQuery] int page = 1, [FromQuery] int pageSize = 20)
-    {
-        var products = await _productService.GetAllAsync(page, pageSize);
-        var totalCount = await _productService.GetTotalCountAsync();
-
-        return Ok(new
-        {
-            data = products,
-            page,
-            pageSize,
-            totalCount,
-            totalPages = (int)Math.Ceiling((double)totalCount / pageSize)
-        });
-    }
+    private readonly IProductService _productService = productService;
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Product>> GetById(Guid id)
+    public async Task<ActionResult<Product>> GetById(int id)
     {
         var product = await _productService.GetByIdAsync(id);
         if (product == null)
@@ -42,19 +21,9 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet("category/{categoryId}")]
-    public async Task<ActionResult<IEnumerable<Product>>> GetByCategoryId(Guid categoryId)
+    public async Task<ActionResult<IEnumerable<Product>>> GetByCategoryId(int categoryId)
     {
         var products = await _productService.GetByCategoryIdAsync(categoryId);
-        return Ok(products);
-    }
-
-    [HttpGet("search")]
-    public async Task<ActionResult<IEnumerable<Product>>> Search([FromQuery] string q)
-    {
-        if (string.IsNullOrWhiteSpace(q))
-            return BadRequest(new { message = "Search query is required" });
-
-        var products = await _productService.SearchAsync(q);
         return Ok(products);
     }
 
@@ -69,7 +38,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<Product>> Update(Guid id, [FromBody] Product product)
+    public async Task<ActionResult<Product>> Update(int id, [FromBody] Product product)
     {
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
@@ -82,7 +51,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<IActionResult> Delete(int id)
     {
         var deleted = await _productService.DeleteAsync(id);
         if (!deleted)
