@@ -1,8 +1,10 @@
 using Microsoft.Extensions.DependencyInjection;
 using ShoppeeClone.Application.Common.Interfaces.Authentication;
-using ShoppeeClone.Application.Services.Authentication;
 using ShoppeeClone.Infrastructure.Authentication;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
+using ShoppeeClone.Infrastructure.Repositories;
+using ShoppeeClone.Application.Services.Persistence;
 
 namespace ShoppeeClone.Infrastructure;
 
@@ -12,6 +14,14 @@ public static class DependencyInjection
     {
         infrastructures.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         infrastructures.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        infrastructures.AddScoped<IUserRepository, UserRepo>();
+        infrastructures.AddDbContext<AppDbContext>(options =>
+        {
+            options
+                .UseNpgsql(
+                    configuration.GetConnectionString("DefaultConnection"))
+                .UseSnakeCaseNamingConvention();
+        });
         return infrastructures;
     }
 }

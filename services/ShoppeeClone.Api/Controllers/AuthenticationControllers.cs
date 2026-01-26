@@ -35,9 +35,6 @@ public class AuthenticationController(IAuthenticationService authenticationServi
             request.Email,
             request.Password
         );
-        return Ok(new
-        {
-            userId = authResult.UserId,
-        });
+        return Ok(authResult);
     }
 }

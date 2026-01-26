@@ -2,72 +2,72 @@ services:
   # =========================
   # Frontend Service (React + Nginx)
   # =========================
-  frontend:
-    build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-    container_name: frontend
-    ports:
-      - "80:80"
-    depends_on:
-      - ecommerce
-      - notification
-    networks:
-      - app-network
-    environment:
-      - VITE_API_URL=${VITE_API_URL}
-    restart: unless-stopped
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./frontend/Dockerfile
+  #   container_name: frontend
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - ecommerce
+  #     - notification
+  #   networks:
+  #     - app-network
+  #   environment:
+  #     - VITE_API_URL=${VITE_API_URL}
+  #   restart: unless-stopped
 
   # =========================
   # Ecommerce Service (.NET)
   # =========================
-  ecommerce:
-    build:
-      context: ./services/Ecommerce
-      dockerfile: Dockerfile
-    container_name: ecommerce
-    ports:
-      - "${ECOMMERCE_PORT:-5001}:8080"
-    depends_on:
-      postgres-ecommerce:
-        condition: service_healthy
-    networks:
-      - app-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${ECOMMERCE_ASPNETCORE_ENVIRONMENT:-Development}
-      - ASPNETCORE_URLS=http://+:8080
-      - ConnectionStrings__DefaultConnection=Host=postgres-ecommerce;Port=5432;Database=ecommerce_db;Username=ecommerce_user;Password=ecommerce_pass
-      - Redis__Connection=redis:6379
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+  # ecommerce:
+  #   build:
+  #     context: ./services/Ecommerce
+  #     dockerfile: Dockerfile
+  #   container_name: ecommerce
+  #   ports:
+  #     - "${ECOMMERCE_PORT:-5001}:8080"
+  #   depends_on:
+  #     postgres-ecommerce:
+  #       condition: service_healthy
+  #   networks:
+  #     - app-network
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=${ECOMMERCE_ASPNETCORE_ENVIRONMENT:-Development}
+  #     - ASPNETCORE_URLS=http://+:8080
+  #     - ConnectionStrings__DefaultConnection=Host=postgres-ecommerce;Port=5432;Database=ecommerce_db;Username=ecommerce_user;Password=ecommerce_pass
+  #     - Redis__Connection=redis:6379
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
 
   # =========================
   # Notification Service (.NET)
   # =========================
-  notification:
-    build:
-      context: ./services/Notification
-      dockerfile: Dockerfile
-    container_name: notification
-    ports:
-      - "${NOTIFICATION_PORT:-5002}:8080"
-    networks:
-      - app-network
-    environment:
-      - ASPNETCORE_ENVIRONMENT=${NOTIFICATION_ASPNETCORE_ENVIRONMENT:-Development}
-      - ASPNETCORE_URLS=http://+:8080
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
+  # notification:
+  #   build:
+  #     context: ./services/Notification
+  #     dockerfile: Dockerfile
+  #   container_name: notification
+  #   ports:
+  #     - "${NOTIFICATION_PORT:-5002}:8080"
+  #   networks:
+  #     - app-network
+  #   environment:
+  #     - ASPNETCORE_ENVIRONMENT=${NOTIFICATION_ASPNETCORE_ENVIRONMENT:-Development}
+  #     - ASPNETCORE_URLS=http://+:8080
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8080/weatherforecast"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 40s
 
   # =========================
   # PostgreSQL Database for Ecommerce
