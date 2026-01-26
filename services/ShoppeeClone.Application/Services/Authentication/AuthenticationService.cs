@@ -7,8 +7,13 @@ public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator) : IAuth
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     public AuthenticationResult Login(string email, string password)
     {
+        //string userId, string firstName, string lastName, string[] roles, string email
+        string token = _jwtTokenGenerator.GenerateToken("userId will get by userservice", "firstName", "lastName", email);
+        // check email and password
+        // get information from email
+        // pass to authenticatio result
         return new AuthenticationResult(
-            Guid.NewGuid(),
+            "userId",
             "firstName",
             "lastName",
             email,
@@ -18,13 +23,13 @@ public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator) : IAuth
 
     public AuthenticationResult Register(string firstName, string lastName, string email, string password)
     {
-        string token = _jwtTokenGenerator.GenerateToken(Guid.NewGuid(), firstName, lastName, [], email);
         return new AuthenticationResult(
-                   Guid.NewGuid(),
+                   "userId",
                    firstName,
                    lastName,
                    email,
-                   token
+                   "token"
                );
     }
+
 }

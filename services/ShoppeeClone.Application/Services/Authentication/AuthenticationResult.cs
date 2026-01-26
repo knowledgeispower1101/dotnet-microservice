@@ -1,3 +1,3 @@
 namespace ShoppeeClone.Application.Services.Authentication;
 
-public record AuthenticationResult(Guid Id, string FirstName, string LastName, string Email, string Token);
+public record AuthenticationResult(string UserId, string Email, string FirstName, string LastName, string AccessToken);

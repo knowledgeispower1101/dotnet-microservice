@@ -1,7 +1,7 @@
 namespace ShoppeeClone.Constracts.Authentication;
 
 public record AuthenticationResponse(
-    Guid UserId,
+    string UserId,
     string Email,
     string[] Roles,
     string AccessToken,

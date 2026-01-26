@@ -19,11 +19,11 @@ public class AuthenticationController(IAuthenticationService authenticationServi
             request.Password
         );
         var response = new AuthenticationResponse(
-            authResult.Id,
+            "asd",
             authResult.Email,
             [],
-            authResult.Token,
-            "refresh-token"
+            authResult.AccessToken,
+            "authResult.refreshToken"
         );
         return Ok(response);
     }
@@ -31,6 +31,13 @@ public class AuthenticationController(IAuthenticationService authenticationServi
     [HttpPost("login")]
     public IActionResult Login(LoginRequest request)
     {
-        return Ok(new AuthenticationResponse(new Guid(), request.Email, [], "", ""));
+        var authResult = _authenticationService.Login(
+            request.Email,
+            request.Password
+        );
+        return Ok(new
+        {
+            userId = authResult.UserId,
+        });
     }
 }
