@@ -6,26 +6,20 @@ using ShoppeeClone.Constracts.Authentication;
 
 [ApiController]
 [Route("api/auth")]
-public class AuthenticationController(IAuthenticationService authenticationService) : ControllerBase
+public class AuthenticationControllers(IAuthenticationService authenticationService) : ControllerBase
 {
     private readonly IAuthenticationService _authenticationService = authenticationService;
     [HttpPost("register")]
-    public IActionResult Register(RegisterRequest request)
+    public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var authResult = _authenticationService.Register(
+        var authResult = await _authenticationService.Register(
             request.FirstName,
             request.LastName,
             request.Email,
             request.Password
         );
-        var response = new AuthenticationResponse(
-            "asd",
-            authResult.Email,
-            [],
-            authResult.AccessToken,
-            "authResult.refreshToken"
-        );
-        return Ok(response);
+
+        return Ok(authResult);
     }
 
     [HttpPost("login")]
