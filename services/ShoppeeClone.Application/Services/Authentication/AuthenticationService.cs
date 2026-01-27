@@ -1,33 +1,38 @@
 using ShoppeeClone.Application.Common.Exceptions;
 using ShoppeeClone.Application.Common.Interfaces.Authentication;
-using ShoppeeClone.Application.Common.Interfaces.Security;
+using ShoppeeClone.Application.Common.Interfaces.Authentication.Password;
 using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
 
 namespace ShoppeeClone.Application.Services.Authentication;
 
-public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository, IPasswordHasher passwordHasher) : IAuthenticationService
+public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository, IPasswordHasher passwordHasher, IRefreshTokens refreshTokens) : IAuthenticationService
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
+    private readonly IRefreshTokens _refreshTokens = refreshTokens;
     public async Task<AuthenticationResult> Login(string email, string password)
     {
-        if (await _userRepository.GetUserByEmail(email) is not User user || user.Password != password)
-        {
-            throw new Exception("Email or Password is not correct");
-        }
         //string userId, string firstName, string lastName, string[] roles, string email
-        string token = _jwtTokenGenerator.GenerateToken(user.Id, "firstName", "lastName", email);
         // check email and password
+        var user = await _userRepository.GetUserByEmail(email);
+        if (user is null || !_passwordHasher.Verify(password, user.Password)) throw new Exception("Email or Password is not correct");
         // get information from email
         // pass to authenticatio result
+        // generate refresh token
+
+        // string refreshToken
+        string refreshToken = _refreshTokens.Generate();
+        // string accessToken
+        string accessToken = _jwtTokenGenerator.GenerateToken(user.Id, user.FirstName, user.LastName, email);
+        // save refresh token to redis
         return new AuthenticationResult(
-            "userId",
-            "firstName",
-            "lastName",
+            user.Id,
             email,
-            token
+            accessToken,
+            user.LastName,
+            user.FirstName
         );
     }
 

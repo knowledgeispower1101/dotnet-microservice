@@ -23,12 +23,25 @@ public class AuthenticationControllers(IAuthenticationService authenticationServ
     }
 
     [HttpPost("login")]
-    public IActionResult Login(LoginRequest request)
+    public async Task<IActionResult> Login(LoginRequest request)
     {
+
         var authResult = _authenticationService.Login(
             request.Email,
             request.Password
         );
+        // var response = new AuthenticationResponse(authResult.Id, authResul)
+        //     Response.Cookies.Append(
+        //        "refreshToken",
+        //        authResult.!,
+        //        new CookieOptions
+        //        {
+        //            HttpOnly = true,
+        //            Secure = true, // HTTPS only
+        //            SameSite = SameSiteMode.Strict,
+        //            Expires = DateTimeOffset.UtcNow.AddDays(7)
+        //        }
+        //    );
         return Ok(authResult);
     }
 }

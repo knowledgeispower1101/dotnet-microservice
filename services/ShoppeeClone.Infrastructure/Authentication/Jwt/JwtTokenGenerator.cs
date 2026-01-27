@@ -1,11 +1,11 @@
+namespace ShoppeeClone.Infrastructure.Authentication.Jwt;
+
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using ShoppeeClone.Application.Common.Interfaces.Authentication;
-
-namespace ShoppeeClone.Infrastructure.Authentication;
 
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {

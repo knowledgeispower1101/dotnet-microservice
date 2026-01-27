@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Infrastructure.Authentication;
+namespace ShoppeeClone.Infrastructure.Authentication.Jwt;
 
 public class JwtSettings
 {
