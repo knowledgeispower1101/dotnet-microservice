@@ -1,21 +1,24 @@
+using ShoppeeClone.Application.Common.Exceptions;
 using ShoppeeClone.Application.Common.Interfaces.Authentication;
+using ShoppeeClone.Application.Common.Interfaces.Security;
 using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
 
 namespace ShoppeeClone.Application.Services.Authentication;
 
-public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository) : IAuthenticationService
+public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRepository userRepository, IPasswordHasher passwordHasher) : IAuthenticationService
 {
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IUserRepository _userRepository = userRepository;
-    public AuthenticationResult Login(string email, string password)
+    private readonly IPasswordHasher _passwordHasher = passwordHasher;
+    public async Task<AuthenticationResult> Login(string email, string password)
     {
-        if (_userRepository.GetUserByEmail(email) is not User user || user.Password != password)
+        if (await _userRepository.GetUserByEmail(email) is not User user || user.Password != password)
         {
             throw new Exception("Email or Password is not correct");
         }
         //string userId, string firstName, string lastName, string[] roles, string email
-        string token = _jwtTokenGenerator.GenerateToken("userId will get by userservice", "firstName", "lastName", email);
+        string token = _jwtTokenGenerator.GenerateToken(user.Id, "firstName", "lastName", email);
         // check email and password
         // get information from email
         // pass to authenticatio result
@@ -28,22 +31,17 @@ public class AuthenticationService(IJwtTokenGenerator jwtTokenGenerator, IUserRe
         );
     }
 
-    public AuthenticationResult Register(string firstName, string lastName, string email, string password)
+    public async Task<User> Register(string firstName, string lastName, string email, string password)
     {
-        if (_userRepository.GetUserByEmail(email) is not null) throw new Exception($"User with this {email} is already exists.");
+        if (await _userRepository.GetUserByEmail(email) is User userDB) throw new UserAlreadyExistsException(email);
+        string hashedPassword = _passwordHasher.Hash(password);
         var user = new User
         {
             FirstName = firstName,
             LastName = lastName,
             Email = email,
+            Password = hashedPassword
         };
-        return new AuthenticationResult(
-                   "userId",
-                   firstName,
-                   lastName,
-                   email,
-                   ""
-               );
+        return await _userRepository.Add(user);
     }
-
 }

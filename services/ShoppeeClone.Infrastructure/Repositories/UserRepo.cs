@@ -1,17 +1,24 @@
 using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace ShoppeeClone.Infrastructure.Repositories;
 
-public class UserRepo : IUserRepository
+public class UserRepo(AppDbContext appDbContext) : IUserRepository
 {
-    public void Add(User user)
+    private readonly AppDbContext context = appDbContext;
+    public async Task<User> Add(User user)
     {
-        throw new NotImplementedException();
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+        return user;
     }
 
-    public User? GetUserByEmail(string email)
+    public async Task<User?> GetUserByEmail(string email)
     {
-        throw new NotImplementedException();
+        var user = await context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        Console.WriteLine($"user is {user}");
+        return user;
     }
+
 }

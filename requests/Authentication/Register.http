@@ -4,8 +4,8 @@ POST {{host}}/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "abc@gmail.com",
-    "password": "abc",
+    "email": "dewded2312ed3erev@gmail.com",
+    "password": "testhashed",
     "firstName": "Hung",
     "lastName": "Nguyen"
 }

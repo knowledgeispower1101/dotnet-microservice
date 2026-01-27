@@ -10,7 +10,7 @@ namespace ShoppeeClone.Infrastructure.Authentication;
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
     private readonly JwtSettings _options = options.Value;
-    public string GenerateToken(string userId, string firstName, string lastName, string email)
+    public string GenerateToken(int userId, string firstName, string lastName, string email)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecreteKey)),
@@ -18,7 +18,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
         );
         var claims = new List<Claim>
         {
-            new(JwtRegisteredClaimNames.Sub, userId),
+            new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.GivenName, firstName),
             new(JwtRegisteredClaimNames.FamilyName, lastName),
             new(JwtRegisteredClaimNames.Email, email)
