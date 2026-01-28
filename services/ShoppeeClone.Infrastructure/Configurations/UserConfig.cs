@@ -13,15 +13,7 @@ internal sealed class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(user => user.FirstName).IsRequired();
         builder.Property(user => user.LastName).IsRequired();
         builder.Property(user => user.Password).IsRequired();
+
         builder.HasIndex(user => user.Email).IsUnique();
-        var seedUsers = Enumerable.Range(1, 1000).Select(id => new User
-        {
-            Id = id,
-            LastName = $"LastName{id}",
-            FirstName = $"FirstName{id}",
-            Password = $"hashed-password{id}",
-            Email = $"youremail-{id}@gmail.com"
-        });
-        builder.HasData(seedUsers);
     }
 }

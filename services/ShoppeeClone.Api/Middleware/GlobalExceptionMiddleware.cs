@@ -1,15 +1,19 @@
-
-using ShoppeeClone.Application.Common.Exceptions;
+using ShoppeeClone.Application.Exceptions;
 
 namespace ShoppeeClone.Api.Middleware;
 
-public class GlobalExceptionMiddleware(RequestDelegate next)
+public sealed class GlobalExceptionMiddleware
 {
-    private static readonly Dictionary<Type, int> ExceptionStatusMap = new()
-{
-    { typeof(UserAlreadyExistsException), StatusCodes.Status409Conflict }
-};
-    private readonly RequestDelegate _next = next;
+    private readonly RequestDelegate _next;
+    private readonly ILogger<GlobalExceptionMiddleware> _logger;
+
+    public GlobalExceptionMiddleware(
+        RequestDelegate next,
+        ILogger<GlobalExceptionMiddleware> logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
 
     public async Task Invoke(HttpContext context)
     {
@@ -19,23 +23,33 @@ public class GlobalExceptionMiddleware(RequestDelegate next)
         }
         catch (AppException ex)
         {
-            context.Response.StatusCode = ExceptionStatusMap.TryGetValue(ex.GetType(), out var statusCode) ? statusCode : StatusCodes.Status400BadRequest;
+            context.Response.StatusCode = (int)ex.StatusCode;
             context.Response.ContentType = "application/json";
-            await context.Response.WriteAsJsonAsync(new
-            {
-                errorCode = ex.ErrorCode,
-                message = ex.Message
-            });
-        }
-        catch (Exception)
-        {
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-            await context.Response.WriteAsJsonAsync(new
+            await context.Response.WriteAsJsonAsync(new ErrorResponse
             {
-                errorCode = "INTERNAL_SERVER_ERROR",
-                message = "Something went wrong"
+                ErrorCode = ex.ErrorCode,
+                ErrorMessage = ex.Message
             });
         }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Unhandled exception");
+
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(new ErrorResponse
+            {
+                ErrorCode = "INTERNAL_SERVER_ERROR",
+                ErrorMessage = "Unexpected error occurred"
+            });
+        }
+    }
+
+    private sealed class ErrorResponse
+    {
+        public string ErrorCode { get; init; } = default!;
+        public string ErrorMessage { get; init; } = default!;
     }
 }

@@ -1,21 +1,60 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using ShoppeeClone.Api.Middleware;
 using ShoppeeClone.Application;
 using ShoppeeClone.Infrastructure;
+using ShoppeeClone.Infrastructure.Authentication.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddApplication()
+    .AddInfrastructure(builder.Configuration)
+    .AddControllers();
+
+var jwtSettings = builder.Configuration
+    .GetSection("JwtSettings")
+    .Get<JwtSettings>()!;
+
+builder.Services.AddCors(options =>
 {
-    builder.Services
-        .AddApplication()
-        .AddInfrastructure(builder.Configuration)
-        .AddControllers();
-}
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+// .AddJwtBearer(options =>
+// {
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuer = true,
+//         ValidateAudience = true,
+//         ValidateLifetime = true,
+//         ValidateIssuerSigningKey = true,
+
+//         ValidIssuer = jwtSettings.Issuer,
+//         ValidAudience = jwtSettings.Audience,
+//         IssuerSigningKey = new SymmetricSecurityKey(
+//             Encoding.UTF8.GetBytes(jwtSettings.SecreteKey)
+//         )
+//     };
+// });
+
+// builder.Services.AddAuthorization();
 
 
 var app = builder.Build();
-{
-    app.UseMiddleware<GlobalExceptionMiddleware>();
-    app.UseHttpsRedirection();
-    app.MapControllers();
-    app.Run();
-}
 
+app.UseMiddleware<GlobalExceptionMiddleware>();
+app.UseHttpsRedirection();
+app.UseCors("AllowAll");
+
+// app.UseAuthentication();
+// app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
