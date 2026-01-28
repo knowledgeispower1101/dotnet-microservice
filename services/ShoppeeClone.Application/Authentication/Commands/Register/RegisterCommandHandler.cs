@@ -1,10 +1,8 @@
 namespace ShoppeeClone.Application.Authentication.Commands.Register;
 
 using MediatR;
-using ShoppeeClone.Application.Common;
 using ShoppeeClone.Application.Common.Errors;
 using ShoppeeClone.Application.Common.Interfaces;
-using ShoppeeClone.Application.Exceptions;
 using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
 
@@ -23,6 +21,7 @@ public class RegisterCommandHandler(IUserRepository userRepository, IPasswordHas
             Email = commands.Email,
             Password = hashedPassword
         });
+
         return new RegisterResponse(user.Id, user.Email, user.LastName, user.FirstName);
     }
 }

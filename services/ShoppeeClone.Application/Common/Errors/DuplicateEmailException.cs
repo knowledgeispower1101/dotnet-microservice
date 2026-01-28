@@ -1,8 +1,17 @@
+using System.Net;
+using ShoppeeClone.Application.Exceptions;
+
 namespace ShoppeeClone.Application.Common.Errors;
 
-using System.Net;
-public sealed class DuplicateEmailException : Exception, IServiceException
+
+
+public sealed class DuplicateEmailException : AppException
 {
-    public HttpStatusCode StatusCode => HttpStatusCode.Conflict;
-    public string ErrorMessage => "Email already existed";
+    public DuplicateEmailException()
+        : base("Email already existed")
+    {
+    }
+
+    public override string ErrorCode => "DUPLICATE_EMAIL";
+    public override HttpStatusCode StatusCode => HttpStatusCode.Conflict;
 }

@@ -8,9 +8,10 @@ using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Infrastructure.Authentication.Jwt;
 using ShoppeeClone.Infrastructure.Authentication.Password;
 using ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
-using StackExchange.Redis;
-using Microsoft.Extensions.Options;
 using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Infrastructure.Persistence;
+using MediatR;
+using ShoppeeClone.Application.Common.Behaviors;
 
 public static class DependencyInjection
 {
@@ -21,21 +22,21 @@ public static class DependencyInjection
         infrastructures.Configure<JwtSettings>(
             configuration.GetSection("JwtSettings"));
 
-        infrastructures.Configure<RedisSettings>(
-            configuration.GetSection("Redis"));
+        // infrastructures.Configure<RedisSettings>(
+        //     configuration.GetSection("Redis"));
 
-        infrastructures.AddSingleton<IConnectionMultiplexer>(sp =>
-        {
-            var redisSettings = sp
-                .GetRequiredService<IOptions<RedisSettings>>()
-                .Value;
-            return ConnectionMultiplexer.Connect(redisSettings.Connection);
-        });
+        // infrastructures.AddSingleton<IConnectionMultiplexer>(sp =>
+        // {
+        //     var redisSettings = sp
+        //         .GetRequiredService<IOptions<RedisSettings>>()
+        //         .Value;
+        //     return ConnectionMultiplexer.Connect(redisSettings.Connection);
+        // });
         infrastructures.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
         infrastructures.AddScoped<IUserRepository, UserRepo>();
         infrastructures.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
         infrastructures.AddScoped<IRefreshTokens, CryptoRefreshTokenGenerator>();
-        infrastructures.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
+        // infrastructures.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
 
         infrastructures.AddDbContext<AppDbContext>(options =>
         {
@@ -43,7 +44,11 @@ public static class DependencyInjection
                 configuration.GetConnectionString("DefaultConnection"))
                 .UseSnakeCaseNamingConvention();
         });
-
+        infrastructures.AddScoped<IUnitOfWork, UnitOfWork>();
+        infrastructures.AddScoped(
+                   typeof(IPipelineBehavior<,>),
+                   typeof(TransactionBehavior<,>)
+               );
         return infrastructures;
     }
 }

@@ -1,5 +1,11 @@
 namespace ShoppeeClone.Application.Authentication.Commands.Register;
 
 using MediatR;
+using ShoppeeClone.Application.Common.Interfaces;
 
-public record RegisterCommands(String FirstName, string LastName, string Email, string Password) : IRequest<RegisterResponse>;
+public record RegisterCommands(
+    string FirstName,
+    string LastName,
+    string Email,
+    string Password
+) : IRequest<RegisterResponse>, ITransactionalRequest;
