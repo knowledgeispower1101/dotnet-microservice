@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Application.Common.Exceptions;
+namespace ShoppeeClone.Application.Exceptions;
 
 public abstract class AppException(string message) : Exception(message)
 {

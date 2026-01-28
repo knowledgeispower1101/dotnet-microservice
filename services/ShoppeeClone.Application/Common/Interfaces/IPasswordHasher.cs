@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Application.Common.Interfaces.Authentication.Password;
+namespace ShoppeeClone.Application.Common.Interfaces;
 
 public interface IPasswordHasher
 {

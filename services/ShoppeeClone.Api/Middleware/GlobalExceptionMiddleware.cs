@@ -1,16 +1,14 @@
-
-using ShoppeeClone.Application.Common.Exceptions;
+using ShoppeeClone.Application.Common.Errors;
+using ShoppeeClone.Application.Exceptions;
 
 namespace ShoppeeClone.Api.Middleware;
 
 public class GlobalExceptionMiddleware(RequestDelegate next)
 {
-    private static readonly Dictionary<Type, int> ExceptionStatusMap = new()
-{
-    { typeof(UserAlreadyExistsException), StatusCodes.Status409Conflict }
-};
+    private static readonly Dictionary<Type, int> ExceptionStatusMap = new(){
+        { typeof(DuplicateEmailException), StatusCodes.Status409Conflict }
+    };
     private readonly RequestDelegate _next = next;
-
     public async Task Invoke(HttpContext context)
     {
         try
@@ -24,13 +22,12 @@ public class GlobalExceptionMiddleware(RequestDelegate next)
             await context.Response.WriteAsJsonAsync(new
             {
                 errorCode = ex.ErrorCode,
-                message = ex.Message
+                errorMessage = ex.Message
             });
         }
         catch (Exception)
         {
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
             await context.Response.WriteAsJsonAsync(new
             {
                 errorCode = "INTERNAL_SERVER_ERROR",

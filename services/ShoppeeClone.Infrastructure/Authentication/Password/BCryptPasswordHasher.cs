@@ -1,6 +1,7 @@
+using ShoppeeClone.Application.Common.Interfaces;
+
 namespace ShoppeeClone.Infrastructure.Authentication.Password;
 
-using ShoppeeClone.Application.Common.Interfaces.Authentication.Password;
 
 public class BCryptPasswordHasher : IPasswordHasher
 {

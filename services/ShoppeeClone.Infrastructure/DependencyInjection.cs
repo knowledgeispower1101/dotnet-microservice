@@ -7,11 +7,10 @@ using ShoppeeClone.Infrastructure.Repositories;
 using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Infrastructure.Authentication.Jwt;
 using ShoppeeClone.Infrastructure.Authentication.Password;
-using ShoppeeClone.Application.Common.Interfaces.Authentication.Password;
-using ShoppeeClone.Application.Common.Interfaces.Authentication;
 using ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
 using StackExchange.Redis;
 using Microsoft.Extensions.Options;
+using ShoppeeClone.Application.Common.Interfaces;
 
 public static class DependencyInjection
 {

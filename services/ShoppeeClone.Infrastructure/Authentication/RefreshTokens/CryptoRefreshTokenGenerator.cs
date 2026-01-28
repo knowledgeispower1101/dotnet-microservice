@@ -1,5 +1,5 @@
 using System.Security.Cryptography;
-using ShoppeeClone.Application.Common.Interfaces.Authentication;
+using ShoppeeClone.Application.Common.Interfaces;
 
 namespace ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
 

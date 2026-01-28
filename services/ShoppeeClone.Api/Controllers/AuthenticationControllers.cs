@@ -1,47 +1,47 @@
 namespace ShoppeeClone.Api.Controllers;
 
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ShoppeeClone.Application.Services.Authentication;
+using ShoppeeClone.Application.Authentication.Commands.Register;
+using ShoppeeClone.Application.Authentication.Queries.Login;
 using ShoppeeClone.Constracts.Authentication;
+
 
 [ApiController]
 [Route("api/auth")]
-public class AuthenticationControllers(IAuthenticationService authenticationService) : ControllerBase
+public class AuthenticationControllers(ISender mediator) : ControllerBase
 {
-    private readonly IAuthenticationService _authenticationService = authenticationService;
+    private readonly ISender _mediator = mediator;
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var authResult = await _authenticationService.Register(
-            request.FirstName,
+        var command = new RegisterCommands(request.FirstName,
             request.LastName,
             request.Email,
-            request.Password
-        );
-
+            request.Password);
+        var authResult = await _mediator.Send(command);
         return Ok(authResult);
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginRequest request)
+    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
     {
-
-        var authResult = _authenticationService.Login(
+        var query = new LoginQuery(
             request.Email,
             request.Password
         );
-        // var response = new AuthenticationResponse(authResult.Id, authResul)
-        //     Response.Cookies.Append(
-        //        "refreshToken",
-        //        authResult.!,
-        //        new CookieOptions
-        //        {
-        //            HttpOnly = true,
-        //            Secure = true, // HTTPS only
-        //            SameSite = SameSiteMode.Strict,
-        //            Expires = DateTimeOffset.UtcNow.AddDays(7)
-        //        }
-        //    );
-        return Ok(authResult);
+        LoginResponse response = await _mediator.Send(query);
+        Response.Cookies.Append(
+            "accessToken",
+            response.AccessToken,
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTimeOffset.UtcNow.AddDays(1)
+            }
+        );
+        return Ok(response);
     }
 }

@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ShoppeeClone.Application.Common.Interfaces.Authentication;
+using ShoppeeClone.Application.Common.Interfaces;
 
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
@@ -26,9 +26,10 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
 
         var securityToken = new JwtSecurityToken(
             issuer: _options.Issuer,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddDays(_options.ExpiryDays),
             claims: claims,
-            signingCredentials: signingCredentials
+            signingCredentials: signingCredentials,
+            audience: _options.Audience
         );
 
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
