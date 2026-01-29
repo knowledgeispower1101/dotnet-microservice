@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace ShoppeeClone.Application.Exceptions;
+namespace ShoppeeClone.Application.Common.Errors;
 
 public abstract class AppException(string message) : Exception(message)
 {

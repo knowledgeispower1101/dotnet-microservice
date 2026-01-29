@@ -1,5 +1,3 @@
-export * from './useCategory';
 import useRegisterModal from './useRegisterModal';
-
+export { useRegister } from './useUser';
 export { useRegisterModal };
-export { useDebounce } from './useDebounce';

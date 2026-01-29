@@ -8,6 +8,7 @@ interface ButtonProps {
   small?: boolean;
   icon?: IconType;
 }
+
 function Button({ label, onClick, disabled, outline, small, icon: Icon }: ButtonProps) {
   return (
     <button
@@ -26,7 +27,6 @@ function Button({ label, onClick, disabled, outline, small, icon: Icon }: Button
     >
       {Icon && <Icon size={24} className="absolute left-4 top-3" />}
       {label}
-      Button
     </button>
   );
 }

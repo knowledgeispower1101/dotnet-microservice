@@ -6,8 +6,10 @@ interface AuthState {
   logout: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   setAccessToken: (token) => set({ accessToken: token }),
   logout: () => set({ accessToken: null }),
 }));
+
+export default useAuthStore;

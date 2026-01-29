@@ -15,12 +15,13 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var command = new RegisterCommands(request.FirstName,
+        var command = new RegisterCommands(
+            request.FirstName,
             request.LastName,
             request.Email,
             request.Password);
-        var authResult = await _mediator.Send(command);
-        return Ok(authResult);
+        var result = await _mediator.Send(command);
+        return Ok(result);
     }
 
     [HttpPost("login")]
