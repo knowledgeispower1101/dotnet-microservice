@@ -32,8 +32,8 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
         );
         LoginResponse response = await _mediator.Send(query);
         Response.Cookies.Append(
-            "accessToken",
-            response.AccessToken,
+            "refreshToken",
+            response.RefreshToken,
             new CookieOptions
             {
                 HttpOnly = true,
