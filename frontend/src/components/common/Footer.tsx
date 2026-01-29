@@ -1,5 +1,5 @@
 import React from 'react';
-import { Facebook, Instagram, Linkedin } from 'lucide-react';
+// import { Facebook, Instagram, Linkedin } from 'lucide-react';
 const customerService = [
   'Trung Tâm Trợ Giúp Shopee',
   'Shopee Blog',
@@ -103,19 +103,19 @@ export const Footer = () => {
             <ul className="space-y-3">
               <li>
                 <a href="#" className="flex items-center text-gray-600 text-xs hover:text-orange-500 transition-colors">
-                  <Facebook className="w-4 h-4 mr-2" />
+                  {/* <Facebook className="w-4 h-4 mr-2" /> */}
                   Facebook
                 </a>
               </li>
               <li>
                 <a href="#" className="flex items-center text-gray-600 text-xs hover:text-orange-500 transition-colors">
-                  <Instagram className="w-4 h-4 mr-2" />
+                  {/* <Instagram className="w-4 h-4 mr-2" /> */}
                   Instagram
                 </a>
               </li>
               <li>
                 <a href="#" className="flex items-center text-gray-600 text-xs hover:text-orange-500 transition-colors">
-                  <Linkedin className="w-4 h-4 mr-2" />
+                  {/* <Linkedin className="w-4 h-4 mr-2" /> */}
                   LinkedIn
                 </a>
               </li>

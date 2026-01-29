@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Package, Flame, Shirt, Award, Tag } from 'lucide-react';
+// import { Zap, Package, Flame, Shirt, Award, Tag } from 'lucide-react';
 import { Container } from '@/components';
 
 interface NavigationItem {
@@ -9,12 +9,12 @@ interface NavigationItem {
 
 export const BannerSection = () => {
   const navigationItems: NavigationItem[] = [
-    { icon: <Zap className="w-6 h-6 text-orange-500" />, label: 'Deal Từ 1.000Đ' },
-    { icon: <Package className="w-6 h-6 text-red-500" />, label: 'Shopee Xu Lý' },
-    { icon: <Flame className="w-6 h-6 text-orange-500" />, label: 'Deal Hot Giờ Vàng' },
-    { icon: <Shirt className="w-6 h-6 text-orange-500" />, label: 'Shopee Style Giảm 30%' },
-    { icon: <Award className="w-6 h-6 text-orange-500" />, label: 'Khách Hàng Thân Thiết' },
-    { icon: <Tag className="w-6 h-6 text-orange-500" />, label: 'Mã Giảm Giá' },
+    // { icon: <Zap className="w-6 h-6 text-orange-500" />, label: 'Deal Từ 1.000Đ' },
+    // { icon: <Package className="w-6 h-6 text-red-500" />, label: 'Shopee Xu Lý' },
+    // { icon: <Flame className="w-6 h-6 text-orange-500" />, label: 'Deal Hot Giờ Vàng' },
+    // { icon: <Shirt className="w-6 h-6 text-orange-500" />, label: 'Shopee Style Giảm 30%' },
+    // { icon: <Award className="w-6 h-6 text-orange-500" />, label: 'Khách Hàng Thân Thiết' },
+    // { icon: <Tag className="w-6 h-6 text-orange-500" />, label: 'Mã Giảm Giá' },
   ];
 
   return (
@@ -71,7 +71,9 @@ export const BannerSection = () => {
           <div className="flex flex-col gap-2">
             {/* Top Small Banner */}
             <div className="bg-linear-to-r from-teal-400 to-emerald-400 rounded-lg p-4 shadow-lg flex-1">
-              <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold text-teal-600">15.1</div>
+              <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold text-teal-600">
+                15.1
+              </div>
               <div className="flex items-center justify-between h-full">
                 <div className="text-white">
                   <div className="text-sm font-semibold">CÀ PHÊ, TRÀ SỮA</div>
@@ -88,7 +90,9 @@ export const BannerSection = () => {
 
             {/* Bottom Small Banner */}
             <div className="bg-linear-to-r from-red-500 to-orange-500 rounded-lg p-4 shadow-lg flex-1 relative overflow-hidden">
-              <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold text-red-600">15.1</div>
+              <div className="absolute top-2 left-2 bg-white px-2 py-1 rounded text-xs font-bold text-red-600">
+                15.1
+              </div>
               <div className="flex items-center justify-between h-full">
                 <div className="text-white">
                   <div className="text-lg font-bold">SHOPEE</div>
