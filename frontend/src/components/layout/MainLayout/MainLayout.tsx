@@ -1,14 +1,17 @@
-import { Outlet } from 'react-router-dom';
-import { Footer, HeaderLayout } from '@/components';
+import { Navbar, RegisterModal } from '@/components';
+import { ToasterProvider } from '@/providers';
 
 const MainLayout = () => {
   return (
     <>
-      <HeaderLayout />
+      <ToasterProvider />
+      <Navbar />
+      <RegisterModal />
+      {/* 
       <main>
         <Outlet />
       </main>
-      <Footer />
+      <Footer /> */}
     </>
   );
 };

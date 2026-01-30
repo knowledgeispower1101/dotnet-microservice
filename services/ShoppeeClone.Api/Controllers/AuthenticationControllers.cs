@@ -15,12 +15,13 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var command = new RegisterCommands(request.FirstName,
+        var command = new RegisterCommands(
+            request.FirstName,
             request.LastName,
             request.Email,
             request.Password);
-        var authResult = await _mediator.Send(command);
-        return Ok(authResult);
+        var result = await _mediator.Send(command);
+        return Ok(result);
     }
 
     [HttpPost("login")]
@@ -32,8 +33,8 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
         );
         LoginResponse response = await _mediator.Send(query);
         Response.Cookies.Append(
-            "accessToken",
-            response.AccessToken,
+            "refreshToken",
+            response.RefreshToken,
             new CookieOptions
             {
                 HttpOnly = true,

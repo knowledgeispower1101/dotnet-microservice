@@ -11,7 +11,7 @@ const getEnvVar = (key: string, defaultValue?: string): string => {
 };
 
 export const ENV = {
-  API_URL: getEnvVar('VITE_API_URL', 'http://localhost:80/api/'),
+  VITE_API_URL: getEnvVar('VITE_API_URL', 'http://localhost:5287/api/'),
   NODE_ENV: import.meta.env.MODE || 'development',
   IS_DEV: import.meta.env.DEV,
   IS_PROD: import.meta.env.PROD,

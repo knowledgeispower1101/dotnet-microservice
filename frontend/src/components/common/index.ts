@@ -1,5 +1,8 @@
-export { Container } from './Container';
-export { Footer } from './Footer';
+import Container from './Container';
+import Navbar from './navbar/Navbar';
+import Heading from './Heading';
+export { Container, Navbar, Heading };
+export * from './modals';
 export { Loading } from './Loading';
 export { MyCarousel } from './MyCarousel';
 export { ErrorBoundary } from './ErrorBoundary';

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+// import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface CarouselProps<T> {
   items: T[];
@@ -27,9 +27,9 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
 
   const visibleItems: T[] = useMemo(
     () => items.slice(currentIndex * itemsPerPage, (currentIndex + 1) * itemsPerPage),
-    [items, currentIndex, itemsPerPage]
+    [items, currentIndex, itemsPerPage],
   );
-  
+
   return (
     <div className="w-full">
       <div className="relative px-12">
@@ -39,7 +39,7 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 rounded-full p-2 shadow-lg transition-all"
             aria-label="Previous"
           >
-            <ChevronLeft className="w-5 h-5 text-gray-700" />
+            {/* <ChevronLeft className="w-5 h-5 text-gray-700" /> */}
           </button>
         )}
 
@@ -61,7 +61,7 @@ export const MyCarousel = <T,>({ items, renderItem, itemsPerRow = 3, rows = 1, g
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white hover:bg-gray-100 rounded-full p-2 shadow-lg transition-all"
             aria-label="Next"
           >
-            <ChevronRight className="w-5 h-5 text-gray-700" />
+            {/* <ChevronRight className="w-5 h-5 text-gray-700" /> */}
           </button>
         )}
       </div>

@@ -1,4 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import { authRoutes, homeRoutes } from '@/features';
+import { homeRoutes } from '@/features';
 
-export const router = createBrowserRouter([...authRoutes, ...homeRoutes]);
+export const router = createBrowserRouter([...homeRoutes]);

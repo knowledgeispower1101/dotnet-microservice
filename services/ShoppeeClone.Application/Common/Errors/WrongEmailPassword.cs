@@ -1,8 +1,6 @@
-using System.Net;
-using ShoppeeClone.Application.Exceptions;
-
 namespace ShoppeeClone.Application.Common.Errors;
 
+using System.Net;
 public sealed class WrongEmailPasswordException : AppException
 {
     public WrongEmailPasswordException()

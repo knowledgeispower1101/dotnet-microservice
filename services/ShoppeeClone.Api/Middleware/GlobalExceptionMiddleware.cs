@@ -1,19 +1,13 @@
-using ShoppeeClone.Application.Exceptions;
+using ShoppeeClone.Application.Common.Errors;
 
 namespace ShoppeeClone.Api.Middleware;
 
-public sealed class GlobalExceptionMiddleware
+public sealed class GlobalExceptionMiddleware(
+    RequestDelegate next,
+    ILogger<GlobalExceptionMiddleware> logger)
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger<GlobalExceptionMiddleware> _logger;
-
-    public GlobalExceptionMiddleware(
-        RequestDelegate next,
-        ILogger<GlobalExceptionMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    private readonly RequestDelegate _next = next;
+    private readonly ILogger<GlobalExceptionMiddleware> _logger = logger;
 
     public async Task Invoke(HttpContext context)
     {
@@ -28,8 +22,8 @@ public sealed class GlobalExceptionMiddleware
 
             await context.Response.WriteAsJsonAsync(new ErrorResponse
             {
-                ErrorCode = ex.ErrorCode,
-                ErrorMessage = ex.Message
+                StatusCode = ex.ErrorCode,
+                Message = ex.Message
             });
         }
         catch (Exception ex)
@@ -41,15 +35,15 @@ public sealed class GlobalExceptionMiddleware
 
             await context.Response.WriteAsJsonAsync(new ErrorResponse
             {
-                ErrorCode = "INTERNAL_SERVER_ERROR",
-                ErrorMessage = "Unexpected error occurred"
+                StatusCode = "INTERNAL_SERVER_ERROR",
+                Message = "Unexpected error occurred"
             });
         }
     }
 
     private sealed class ErrorResponse
     {
-        public string ErrorCode { get; init; } = default!;
-        public string ErrorMessage { get; init; } = default!;
+        public string StatusCode { get; init; } = default!;
+        public string Message { get; init; } = default!;
     }
 }
