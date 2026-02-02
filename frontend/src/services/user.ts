@@ -1,5 +1,5 @@
 import { api } from '@/lib';
-import type { ApiResponse } from '.';
+import type { User } from '@/store';
 
 export interface RegisterPayload {
   email: string;
@@ -8,9 +8,38 @@ export interface RegisterPayload {
   firstName: string;
 }
 
+export interface LoginPayload {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  userId: number;
+  email: string;
+  refreshToken: string;
+  lastName: string;
+  firstName: string;
+  accessToken: string;
+}
+
+export interface MeResponse {
+  accessToken: string;
+  user: User;
+}
+
 export const userApi = {
-  register: async (payload: RegisterPayload): Promise<ApiResponse<string>> => {
+  register: async (payload: RegisterPayload) => {
     const res = await api.post('/auth/register', payload);
+    return res.data;
+  },
+  login: async (payload: LoginPayload) => {
+    const res = await api.post('/auth/login', payload);
+    return res.data;
+  },
+  getCurrentUser: async () => {
+    const res = await api.get('/auth/me', {
+      withCredentials: true,
+    });
     return res.data;
   },
 };

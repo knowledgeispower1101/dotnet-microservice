@@ -12,6 +12,7 @@ interface Modal {
   disabled?: boolean;
   secondaryAction?: () => void;
   secondaryActionLabel?: string;
+  onResetForm: () => void;
 }
 function Modal({
   isOpen,
@@ -24,6 +25,7 @@ function Modal({
   disabled,
   secondaryAction,
   secondaryActionLabel,
+  onResetForm,
 }: Modal) {
   const [showModal, setShowModal] = useState(isOpen);
   useEffect(() => {
@@ -36,7 +38,8 @@ function Modal({
     setTimeout(() => {
       onClose();
     }, 300);
-  }, [disabled, onClose]);
+    onResetForm();
+  }, [disabled, onClose, onResetForm]);
 
   const handleSubmit = useCallback(() => {
     if (disabled) return;
