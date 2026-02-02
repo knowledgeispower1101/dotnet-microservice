@@ -1,4 +1,3 @@
-namespace ShoppeeClone.Api.Controllers;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +5,7 @@ using ShoppeeClone.Application.Authentication.Commands.Register;
 using ShoppeeClone.Application.Authentication.Queries.Login;
 using ShoppeeClone.Constracts.Authentication;
 
+namespace ShoppeeClone.Api.Controllers;
 
 [ApiController]
 [Route("api/auth")]
@@ -25,21 +25,21 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<LoginResponse>> Login(LoginRequest request)
+    public async Task<ActionResult> Login(LoginRequest request)
     {
         var query = new LoginQuery(
             request.Email,
             request.Password
         );
-        LoginResponse response = await _mediator.Send(query);
+        var response = await _mediator.Send(query);
         Response.Cookies.Append(
             "refreshToken",
-            response.RefreshToken,
+            response.Data!.ResetToken,
             new CookieOptions
             {
                 HttpOnly = true,
+                SameSite = SameSiteMode.None,
                 Secure = true,
-                SameSite = SameSiteMode.Strict,
                 Expires = DateTimeOffset.UtcNow.AddDays(1)
             }
         );

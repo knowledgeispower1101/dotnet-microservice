@@ -2,13 +2,15 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../avatar/Avatar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuItem from './MenuItem';
-import { useRegisterModal } from '@/hooks';
+import { loginModalStore, registerModalStore, useAuthStore } from '@/store';
 
 function UserMenu() {
-  const registerModal = useRegisterModal();
+  const { user } = useAuthStore();
+  const registerModal = registerModalStore();
+  const loginModal = loginModalStore();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
+  console.log(user);
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
@@ -47,20 +49,33 @@ function UserMenu() {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
-            <MenuItem
-              label="Login"
-              onClick={() => {
-                setIsOpen(false);
-                // login logic
-              }}
-            />
-            <MenuItem
-              label="Sign up"
-              onClick={() => {
-                setIsOpen(false);
-                registerModal.onOpen();
-              }}
-            />
+            {user ? (
+              <>
+                <MenuItem label="My trips" onClick={() => {}} />
+                <MenuItem label="My favourites" onClick={() => {}} />
+                <MenuItem label="My reservations" onClick={() => {}} />
+                <MenuItem label="Airbnb my home" onClick={() => {}} />
+                <hr />
+                <MenuItem label="Logout" onClick={() => {}} />
+              </>
+            ) : (
+              <>
+                <MenuItem
+                  label="Login"
+                  onClick={() => {
+                    setIsOpen(false);
+                    loginModal.onOpen();
+                  }}
+                />
+                <MenuItem
+                  label="Sign up"
+                  onClick={() => {
+                    setIsOpen(false);
+                    registerModal.onOpen();
+                  }}
+                />
+              </>
+            )}
           </div>
         </div>
       )}

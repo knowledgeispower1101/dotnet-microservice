@@ -12,43 +12,53 @@ using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Infrastructure.Persistence;
 using MediatR;
 using ShoppeeClone.Application.Common.Behaviors;
+using StackExchange.Redis;
+using Microsoft.Extensions.Options;
 
 public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(
-        this IServiceCollection infrastructures,
+        this IServiceCollection services,
         IConfiguration configuration)
     {
-        infrastructures.Configure<JwtSettings>(
+        services.Configure<JwtSettings>(
             configuration.GetSection("JwtSettings"));
 
-        // infrastructures.Configure<RedisSettings>(
-        //     configuration.GetSection("Redis"));
+        services.Configure<RedisSettings>(
+            configuration.GetSection("Redis"));
 
-        // infrastructures.AddSingleton<IConnectionMultiplexer>(sp =>
-        // {
-        //     var redisSettings = sp
-        //         .GetRequiredService<IOptions<RedisSettings>>()
-        //         .Value;
-        //     return ConnectionMultiplexer.Connect(redisSettings.Connection);
-        // });
-        infrastructures.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-        infrastructures.AddScoped<IUserRepository, UserRepo>();
-        infrastructures.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
-        infrastructures.AddScoped<IRefreshTokens, CryptoRefreshTokenGenerator>();
-        // infrastructures.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
+        services.AddSingleton<IConnectionMultiplexer>(sp =>
+        {
+            var redisSettings = sp
+                .GetRequiredService<IOptions<RedisSettings>>()
+                .Value;
 
-        infrastructures.AddDbContext<AppDbContext>(options =>
+            var options = ConfigurationOptions.Parse(redisSettings.Connection);
+            options.AbortOnConnectFail = false;
+
+            return ConnectionMultiplexer.Connect(options);
+        });
+
+        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+        services.AddScoped<IUserRepository, UserRepo>();
+        services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
+        services.AddScoped<IRefreshTokens, CryptoRefreshTokenGenerator>();
+        services.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
+
+        services.AddDbContext<AppDbContext>(options =>
         {
             options.UseNpgsql(
-                configuration.GetConnectionString("DefaultConnection"))
-                .UseSnakeCaseNamingConvention();
+                    configuration.GetConnectionString("DefaultConnection"))
+                   .UseSnakeCaseNamingConvention();
         });
-        infrastructures.AddScoped<IUnitOfWork, UnitOfWork>();
-        infrastructures.AddScoped(
-                   typeof(IPipelineBehavior<,>),
-                   typeof(TransactionBehavior<,>)
-               );
-        return infrastructures;
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+        services.AddScoped(
+            typeof(IPipelineBehavior<,>),
+            typeof(TransactionBehavior<,>)
+        );
+
+        return services;
     }
 }

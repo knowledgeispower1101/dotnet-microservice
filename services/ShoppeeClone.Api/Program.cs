@@ -17,14 +17,15 @@ var jwtSettings = builder.Configuration
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("CorsPolicy", policy =>
     {
-        policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
-
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
 // .AddJwtBearer(options =>
@@ -50,8 +51,8 @@ builder.Services
 var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
-app.UseHttpsRedirection();
-app.UseCors("AllowAll");
+// app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
 
 // app.UseAuthentication();
 // app.UseAuthorization();

@@ -1,11 +1,14 @@
-import { Navbar, RegisterModal } from '@/components';
+import { LoginModal, Navbar, RegisterModal } from '@/components';
+import { useAuthInit } from '@/hooks';
 import { ToasterProvider } from '@/providers';
 
 const MainLayout = () => {
+  useAuthInit();
   return (
     <>
       <ToasterProvider />
       <Navbar />
+      <LoginModal />
       <RegisterModal />
       {/* 
       <main>

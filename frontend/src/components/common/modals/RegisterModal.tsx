@@ -1,20 +1,21 @@
 import { AiFillGithub } from 'react-icons/ai';
 import { FcGoogle } from 'react-icons/fc';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
-import { useRegister, useRegisterModal } from '@/hooks';
 import Modal from './Modal';
 import Heading from '../Heading';
 import { Input } from '../input';
 import toast from 'react-hot-toast';
 import Button from '../Button';
 import type { RegisterPayload } from '@/services/user';
+import { registerModalStore } from '@/store';
 import type { ApiResponse } from '@/services';
+import { authHooks } from '@/hooks';
 
 function RegisterModal() {
-  const registerModal = useRegisterModal();
+  const { useRegister } = authHooks;
+  const registerModal = registerModalStore();
   const { mutate: registerAction, isPending } = useRegister();
 
-  // const [isLoading, setIsLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -31,13 +32,14 @@ function RegisterModal() {
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     registerAction(data as RegisterPayload, {
-      onSuccess: (data: ApiResponse<string>) => {
-        toast.success(data.message ?? 'Register successfully');
+      onSuccess: (response: ApiResponse<string>) => {
+        console.log(response);
+        toast.success(response.message ?? 'Login successfully');
         registerModal.onClose();
         reset();
       },
-      onError: (error: any) => {
-        toast.error(error?.response?.data?.message || 'Something went wrong');
+      onError: (error) => {
+        toast.error(error?.message || 'Something went wrong');
       },
     });
   };
@@ -60,7 +62,6 @@ function RegisterModal() {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title={'Welcome to Airbnb'} subtitle={'Create an account'} />
-
       <Input id={'firstName'} label={'First Name'} disabled={isPending} register={register} errors={errors} />
       <Input id={'lastName'} label={'Last Name'} disabled={isPending} register={register} errors={errors} />
       <Input id={'email'} label={'Email'} disabled={isPending} register={register} errors={errors} required />
@@ -85,6 +86,7 @@ function RegisterModal() {
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
+      onResetForm={reset}
     />
   );
 }

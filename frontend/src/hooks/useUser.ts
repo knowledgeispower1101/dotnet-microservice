@@ -1,10 +1,26 @@
-import { useMutation } from '@tanstack/react-query';
-import { userApi, type ApiError, type ApiResponse } from '@/services';
-import type { RegisterPayload } from '@/services/user';
-import type { AxiosError } from 'axios';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { userApi } from '@/services';
+import type { ApiError, ApiResponse } from '@/services';
+import type { LoginPayload, LoginResponse, MeResponse, RegisterPayload } from '@/services';
+import { AxiosError } from 'axios';
 
-export const useRegister = () => {
-  return useMutation<ApiResponse<string>, AxiosError<ApiError>, RegisterPayload>({
-    mutationFn: userApi.register,
-  });
+const authHooks = {
+  useRegister: () =>
+    useMutation<ApiResponse<string>, AxiosError<ApiError>, RegisterPayload>({
+      mutationFn: userApi.register,
+    }),
+
+  useLogin: () =>
+    useMutation<ApiResponse<LoginResponse>, AxiosError<ApiError>, LoginPayload>({
+      mutationFn: userApi.login,
+    }),
+
+  useCurrentUser: () =>
+    useQuery<ApiResponse<MeResponse>>({
+      queryKey: ['auth', 'me'],
+      queryFn: userApi.getCurrentUser,
+      retry: false,
+    }),
 };
+
+export default authHooks;
