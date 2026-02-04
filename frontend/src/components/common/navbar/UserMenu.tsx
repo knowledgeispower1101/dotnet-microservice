@@ -10,7 +10,6 @@ function UserMenu() {
   const loginModal = loginModalStore();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  console.log(user);
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);

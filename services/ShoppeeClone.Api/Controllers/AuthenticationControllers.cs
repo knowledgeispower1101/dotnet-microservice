@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ShoppeeClone.Application.Authentication.Commands.Register;
 using ShoppeeClone.Application.Authentication.Queries.Login;
+using ShoppeeClone.Application.Authentication.Queries.Profile;
+using ShoppeeClone.Application.Common.Errors;
 using ShoppeeClone.Constracts.Authentication;
 
 namespace ShoppeeClone.Api.Controllers;
@@ -43,6 +45,15 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
                 Expires = DateTimeOffset.UtcNow.AddDays(1)
             }
         );
+        return Ok(response);
+    }
+
+    [HttpGet("me")]
+    public async Task<ActionResult> CurrentUser()
+    {
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
+        var query = new ProfileQuery(refreshToken);
+        var response = await _mediator.Send(query);
         return Ok(response);
     }
 }

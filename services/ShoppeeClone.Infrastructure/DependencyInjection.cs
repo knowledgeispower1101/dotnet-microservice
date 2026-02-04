@@ -14,6 +14,7 @@ using MediatR;
 using ShoppeeClone.Application.Common.Behaviors;
 using StackExchange.Redis;
 using Microsoft.Extensions.Options;
+using ShoppeeClone.Infrastructure.Cache;
 
 public static class DependencyInjection
 {
