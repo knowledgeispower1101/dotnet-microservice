@@ -19,4 +19,11 @@ public class UserRepo(AppDbContext appDbContext) : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<User?> GetUserById(int id)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == id);
+    }
 }
