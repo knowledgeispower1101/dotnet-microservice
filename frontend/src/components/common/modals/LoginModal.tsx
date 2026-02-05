@@ -1,14 +1,16 @@
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 import type { ApiResponse, LoginResponse, LoginPayload } from '@/services';
-import { loginModalStore, useAuthStore, type User } from '@/store';
+import { loginModalStore, registerModalStore, useAuthStore, type User } from '@/store';
 import toast from 'react-hot-toast';
 import Modal from './Modal';
 import Heading from '../Heading';
 import { Input } from '../input';
 import { authHooks } from '@/hooks';
+import { useCallback } from 'react';
 
 function LoginModal() {
   const loginModal = loginModalStore();
+  const registerModal = registerModalStore();
   const { setAuth } = useAuthStore();
   const { useLogin } = authHooks;
   const { mutate: loginAction, isPending } = useLogin();
@@ -23,6 +25,23 @@ function LoginModal() {
       password: '',
     },
   });
+  const toggle = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
+
+  const footerContent = (
+    <div className="flex flex-col gap-4 mt-3">
+      <div className="text-neutral-500 text-center mt-4 font-light">
+        <div className="justify-center flex flex-row items-center gap-2">
+          <div>First time using Airbnb?</div>
+          <div className="text-neutral-800 cursor-pointer hover:underline" onClick={toggle}>
+            Create an account
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     loginAction(data as LoginPayload, {
@@ -68,6 +87,7 @@ function LoginModal() {
       isOpen={loginModal.isOpen}
       title={'Login'}
       actionLabel={'Continue'}
+      footer={footerContent}
       onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}

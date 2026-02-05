@@ -1,16 +1,17 @@
+import { loginModalStore, registerModalStore, rentModalStore, useAuthStore } from '@/store';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../avatar/Avatar';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import MenuItem from './MenuItem';
-import { loginModalStore, registerModalStore, useAuthStore } from '@/store';
-import { authHooks } from '@/hooks';
 import { Loading } from '../Loading';
-import { useQueryClient } from '@tanstack/react-query';
+import { authHooks } from '@/hooks';
+import MenuItem from './MenuItem';
 
 function UserMenu() {
   const { user, clearAuth } = useAuthStore();
   const registerModal = registerModalStore();
   const loginModal = loginModalStore();
+  const rentModal = rentModalStore();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const { mutate: logoutAction, isPending } = authHooks.useLogout();
@@ -41,11 +42,20 @@ function UserMenu() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const onRent = useCallback(() => {
+    if (!user) return loginModal.onOpen();
+    rentModal.onOpen();
+  }, [user, loginModal, rentModal]);
+
   if (isPending) return <Loading />;
   return (
     <div className="relative" ref={menuRef}>
       <div className="flex flex-row items-center gap-3">
-        <div className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer">
+        <div
+          onClick={onRent}
+          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+        >
           Airbnb your home
         </div>
 
@@ -68,7 +78,7 @@ function UserMenu() {
                 <MenuItem label="My trips" onClick={() => {}} />
                 <MenuItem label="My favourites" onClick={() => {}} />
                 <MenuItem label="My reservations" onClick={() => {}} />
-                <MenuItem label="Airbnb my home" onClick={() => {}} />
+                <MenuItem label="Airbnb my home" onClick={() => rentModal.onOpen} />
                 <hr />
                 <MenuItem label="Logout" onClick={logout} />
               </>

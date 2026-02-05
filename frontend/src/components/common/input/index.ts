@@ -1,3 +1,3 @@
 import Input from './Input';
-
-export { Input };
+import CategoryInput from './CategoryInput';
+export { Input, CategoryInput };
