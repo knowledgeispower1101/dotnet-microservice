@@ -48,8 +48,17 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("me")]
+    [HttpGet("profile")]
     public async Task<ActionResult> CurrentUser()
+    {
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
+        var query = new ProfileQuery(refreshToken);
+        var response = await _mediator.Send(query);
+        return Ok(response);
+    }
+
+    [HttpPost("logout")]
+    public async Task<ActionResult> Logout()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
         var query = new ProfileQuery(refreshToken);
