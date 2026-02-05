@@ -21,6 +21,10 @@ const authHooks = {
       queryFn: userApi.getCurrentUser,
       retry: false,
     }),
+  useLogout: () =>
+    useMutation({
+      mutationFn: userApi.logout,
+    }),
 };
 
 export default authHooks;

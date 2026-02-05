@@ -42,4 +42,10 @@ export const userApi = {
     });
     return res.data;
   },
+  logout: async () => {
+    const res = await api.post('/auth/logout', {
+      withCredentials: true,
+    });
+    return res.data;
+  },
 };

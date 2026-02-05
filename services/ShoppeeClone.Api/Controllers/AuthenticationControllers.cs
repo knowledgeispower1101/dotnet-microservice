@@ -52,6 +52,7 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
     public async Task<ActionResult> CurrentUser()
     {
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
+        Console.WriteLine(refreshToken);
         var query = new ProfileQuery(refreshToken);
         var response = await _mediator.Send(query);
         return Ok(response);
@@ -63,6 +64,17 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
         var query = new ProfileQuery(refreshToken);
         var response = await _mediator.Send(query);
+        Response.Cookies.Append(
+            "refreshToken",
+            "",
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1)
+            }
+        );
         return Ok(response);
     }
 }
