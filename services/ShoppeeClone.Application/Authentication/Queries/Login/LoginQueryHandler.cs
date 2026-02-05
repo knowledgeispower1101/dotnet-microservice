@@ -1,9 +1,9 @@
 
 using MediatR;
+using ShoppeeClone.Application.Authentication.Persistence;
 using ShoppeeClone.Application.Common.Errors;
 using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Application.Common.Response;
-using ShoppeeClone.Application.Services.Persistence;
 
 namespace ShoppeeClone.Application.Authentication.Queries.Login;
 
@@ -22,14 +22,12 @@ public class LoginQueryHandler(
     private readonly IRefreshTokenStore _refreshTokenStore = refreshTokenStore;
     public async Task<BaseResponse<LoginResponse>> Handle(LoginQuery query, CancellationToken cancellationToken)
     {
-
         var user = await _userRepository.GetUserByEmail(query.Email);
         if (user is null || !_passwordHasher.Verify(query.Password, user.Password)) throw new WrongEmailPasswordException();
         string refreshToken = _refreshTokens.Generate();
         await _refreshTokenStore.SaveAsync(
             user.Id,
-            refreshToken,
-            TimeSpan.FromDays(7)
+            refreshToken
         );
         var accessToken = _jwtTokenGenerator.GenerateToken(
             user.Id,

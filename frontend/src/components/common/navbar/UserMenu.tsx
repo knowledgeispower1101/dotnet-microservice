@@ -3,18 +3,32 @@ import Avatar from '../avatar/Avatar';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import MenuItem from './MenuItem';
 import { loginModalStore, registerModalStore, useAuthStore } from '@/store';
+import { authHooks } from '@/hooks';
+import { Loading } from '../Loading';
+import { useQueryClient } from '@tanstack/react-query';
 
 function UserMenu() {
-  const { user } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const registerModal = registerModalStore();
   const loginModal = loginModalStore();
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  console.log(user);
+  const { mutate: logoutAction, isPending } = authHooks.useLogout();
+  const queryClient = useQueryClient();
+
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
 
+  const logout = () => {
+    logoutAction(undefined, {
+      onSuccess: () => {
+        clearAuth();
+        queryClient.removeQueries({ queryKey: ['auth', 'me'] });
+        setIsOpen(false);
+      },
+    });
+  };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -27,7 +41,7 @@ function UserMenu() {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
-
+  if (isPending) return <Loading />;
   return (
     <div className="relative" ref={menuRef}>
       <div className="flex flex-row items-center gap-3">
@@ -56,7 +70,7 @@ function UserMenu() {
                 <MenuItem label="My reservations" onClick={() => {}} />
                 <MenuItem label="Airbnb my home" onClick={() => {}} />
                 <hr />
-                <MenuItem label="Logout" onClick={() => {}} />
+                <MenuItem label="Logout" onClick={logout} />
               </>
             ) : (
               <>

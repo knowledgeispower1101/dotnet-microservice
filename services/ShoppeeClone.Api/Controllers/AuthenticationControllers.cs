@@ -3,6 +3,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using ShoppeeClone.Application.Authentication.Commands.Register;
 using ShoppeeClone.Application.Authentication.Queries.Login;
+using ShoppeeClone.Application.Authentication.Queries.Profile;
+using ShoppeeClone.Application.Common.Errors;
 using ShoppeeClone.Constracts.Authentication;
 
 namespace ShoppeeClone.Api.Controllers;
@@ -41,6 +43,36 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
                 SameSite = SameSiteMode.None,
                 Secure = true,
                 Expires = DateTimeOffset.UtcNow.AddDays(1)
+            }
+        );
+        return Ok(response);
+    }
+
+    [HttpGet("profile")]
+    public async Task<ActionResult> CurrentUser()
+    {
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
+        Console.WriteLine(refreshToken);
+        var query = new ProfileQuery(refreshToken);
+        var response = await _mediator.Send(query);
+        return Ok(response);
+    }
+
+    [HttpPost("logout")]
+    public async Task<ActionResult> Logout()
+    {
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) throw new BadRequestException();
+        var query = new ProfileQuery(refreshToken);
+        var response = await _mediator.Send(query);
+        Response.Cookies.Append(
+            "refreshToken",
+            "",
+            new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Expires = DateTimeOffset.UtcNow.AddDays(-1)
             }
         );
         return Ok(response);

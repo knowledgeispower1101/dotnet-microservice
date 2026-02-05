@@ -37,7 +37,13 @@ export const userApi = {
     return res.data;
   },
   getCurrentUser: async () => {
-    const res = await api.get('/auth/me', {
+    const res = await api.get('/auth/profile', {
+      withCredentials: true,
+    });
+    return res.data;
+  },
+  logout: async () => {
+    const res = await api.post('/auth/logout', {
       withCredentials: true,
     });
     return res.data;

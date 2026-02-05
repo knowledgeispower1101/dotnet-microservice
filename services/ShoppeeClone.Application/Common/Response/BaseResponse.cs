@@ -13,7 +13,11 @@ public class BaseResponse<T>
         Data = data,
         Message = message
     };
-
+    public static BaseResponse<T> Ok(string? message = null) => new()
+    {
+        Success = true,
+        Message = message
+    };
     public static BaseResponse<T> Fail(string message, string? errorCode = null) => new()
     {
         Success = false,

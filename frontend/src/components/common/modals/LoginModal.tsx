@@ -1,11 +1,10 @@
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
+import type { ApiResponse, LoginResponse, LoginPayload } from '@/services';
+import { loginModalStore, useAuthStore, type User } from '@/store';
+import toast from 'react-hot-toast';
 import Modal from './Modal';
 import Heading from '../Heading';
 import { Input } from '../input';
-import toast from 'react-hot-toast';
-import type { LoginPayload } from '@/services/user';
-import type { ApiResponse, LoginResponse } from '@/services';
-import { loginModalStore, useAuthStore, type User } from '@/store';
 import { authHooks } from '@/hooks';
 
 function LoginModal() {
@@ -72,7 +71,6 @@ function LoginModal() {
       onClose={loginModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
-      // footer={footerContent}
       onResetForm={reset}
     />
   );

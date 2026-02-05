@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
+namespace ShoppeeClone.Infrastructure.Cache;
 
 public class RedisSettings
 {
