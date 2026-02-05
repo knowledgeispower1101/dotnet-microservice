@@ -1,6 +1,6 @@
-using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using ShoppeeClone.Application.Authentication.Persistence;
 
 namespace ShoppeeClone.Infrastructure.Repositories;
 

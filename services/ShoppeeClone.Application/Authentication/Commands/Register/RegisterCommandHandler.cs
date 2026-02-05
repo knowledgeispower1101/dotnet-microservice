@@ -1,10 +1,10 @@
 namespace ShoppeeClone.Application.Authentication.Commands.Register;
 
 using MediatR;
+using ShoppeeClone.Application.Authentication.Persistence;
 using ShoppeeClone.Application.Common.Errors;
 using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Application.Common.Response;
-using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Domain.Entities;
 
 public class RegisterCommandHandler(

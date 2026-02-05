@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using ShoppeeClone.Infrastructure.Repositories;
-using ShoppeeClone.Application.Services.Persistence;
 using ShoppeeClone.Infrastructure.Authentication.Jwt;
 using ShoppeeClone.Infrastructure.Authentication.Password;
 using ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
@@ -15,6 +14,7 @@ using ShoppeeClone.Application.Common.Behaviors;
 using StackExchange.Redis;
 using Microsoft.Extensions.Options;
 using ShoppeeClone.Infrastructure.Cache;
+using ShoppeeClone.Application.Authentication.Persistence;
 
 public static class DependencyInjection
 {
