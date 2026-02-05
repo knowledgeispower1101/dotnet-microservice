@@ -25,6 +25,13 @@ function CountrySelect({ value, onChange }: CountrySelectProps) {
         value={value}
         options={getAll()}
         onChange={(value) => onChange(value as CountrySelectValue | null)}
+        menuPortalTarget={document.body}
+        styles={{
+          menuPortal: (base) => ({
+            ...base,
+            zIndex: 10000,
+          }),
+        }}
         formatOptionLabel={(option: CountrySelectValue) => (
           <div className="flex flex-row items-center gap-3">
             <div>{option.flag}</div>

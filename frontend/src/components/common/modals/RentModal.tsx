@@ -86,12 +86,11 @@ function RentModal() {
   }, [step]);
 
   if (step === STEPS.LOCATION) {
-    console.log(location?.latlng);
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading title="Where is your place located?" subtitle="Help guests find you!" />
         <CountrySelect value={location} onChange={(value) => setCustomValue('location', value)} />
-        <Suspense fallback={<div className="h-[35vh] rounded-lg bg-neutral-200" />}>
+        <Suspense fallback={<div className="rounded-lg bg-neutral-200" />}>
           <Map key={location?.value || 'default'} center={location?.latlng} />
         </Suspense>
       </div>
