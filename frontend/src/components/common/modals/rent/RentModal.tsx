@@ -1,5 +1,5 @@
 import { useForm, useWatch, type FieldValues } from 'react-hook-form';
-import { CategoryStep, InforStep, LocationStep } from './steps';
+import { CategoryStep, ImageUploadStep, InforStep, LocationStep } from './steps';
 import { useRentModal } from '@/hooks';
 import Modal from '../Modal';
 
@@ -11,7 +11,7 @@ function RentModal() {
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
-      imageSrc: '',
+      imageSrc: null,
       price: 1,
       title: '',
       description: '',
@@ -68,6 +68,10 @@ function RentModal() {
         onRoomChange={(value) => setCustomValue('roomCount', value)}
       />
     );
+  }
+
+  if (step === STEPS.IMAGE) {
+    bodyContent = <ImageUploadStep />;
   }
 
   return (
