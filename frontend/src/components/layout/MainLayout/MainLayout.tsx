@@ -1,5 +1,4 @@
-import { LoginModal, Navbar, RegisterModal } from '@/components';
-import RentModal from '@/components/common/modals/RentModal';
+import { LoginModal, Navbar, RegisterModal, RentModal } from '@/components';
 import { useAuthInit } from '@/hooks';
 import { ToasterProvider } from '@/providers';
 
