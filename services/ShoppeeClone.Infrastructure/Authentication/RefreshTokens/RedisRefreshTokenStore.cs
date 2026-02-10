@@ -2,7 +2,7 @@ namespace ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
 
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Application.Authentication.Persistence;
 using ShoppeeClone.Infrastructure.Authentication.Jwt;
 using StackExchange.Redis;
 

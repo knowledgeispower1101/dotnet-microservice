@@ -1,4 +1,3 @@
-namespace ShoppeeClone.Infrastructure;
 
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +13,12 @@ using ShoppeeClone.Infrastructure.Authentication.Jwt;
 using ShoppeeClone.Infrastructure.Authentication.Password;
 using ShoppeeClone.Infrastructure.Authentication.RefreshTokens;
 using ShoppeeClone.Infrastructure.Cache;
-using ShoppeeClone.Infrastructure.ObjectStorage;
+using ShoppeeClone.Infrastructure.Storage;
 using ShoppeeClone.Infrastructure.Persistence;
 using ShoppeeClone.Infrastructure.Repositories;
+using ShoppeeClone.Application.Upload.Persistence;
+
+namespace ShoppeeClone.Infrastructure;
 
 public static class DependencyInjection
 {

@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Application.Common.Interfaces;
+namespace ShoppeeClone.Application.Authentication.Persistence;
 
 public interface IJwtTokenGenerator
 {

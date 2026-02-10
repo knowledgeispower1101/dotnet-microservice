@@ -2,7 +2,6 @@
 using MediatR;
 using ShoppeeClone.Application.Authentication.Persistence;
 using ShoppeeClone.Application.Common.Errors;
-using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Application.Common.Response;
 
 namespace ShoppeeClone.Application.Authentication.Queries.Login;

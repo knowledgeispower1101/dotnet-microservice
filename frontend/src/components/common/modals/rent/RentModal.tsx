@@ -11,7 +11,7 @@ function RentModal() {
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
-      imageSrc: null,
+      imageSrc: [],
       price: 1,
       title: '',
       description: '',
@@ -36,6 +36,8 @@ function RentModal() {
   const guestCount = useWatch({ control, name: 'guestCount' });
   const roomCount = useWatch({ control, name: 'roomCount' });
   const bathroomCount = useWatch({ control, name: 'bathroomCount' });
+  const imageSrc = useWatch({ control, name: 'imageSrc' });
+  const allValues = useWatch({ control });
 
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
@@ -71,9 +73,14 @@ function RentModal() {
   }
 
   if (step === STEPS.IMAGE) {
-    bodyContent = <ImageUploadStep />;
+    bodyContent = (
+      <ImageUploadStep
+        onChange={(value) => setCustomValue('imageSrc', value)}
+        setImage={imageSrc}
+      />
+    );
   }
-
+  console.log(allValues);
   return (
     <Modal
       title="Airbnb your home"

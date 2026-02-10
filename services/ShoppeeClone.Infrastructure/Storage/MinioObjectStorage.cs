@@ -1,8 +1,9 @@
-namespace ShoppeeClone.Infrastructure.ObjectStorage;
 
 using Minio;
 using Minio.DataModel.Args;
-using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Application.Upload.Persistence;
+
+namespace ShoppeeClone.Infrastructure.Storage;
 
 public sealed class MinioObjectStorage(IMinioClient minio) : IObjectStorage
 {

@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Application.Common.Interfaces;
+namespace ShoppeeClone.Application.Upload.Persistence;
 
 public interface IObjectStorage
 {

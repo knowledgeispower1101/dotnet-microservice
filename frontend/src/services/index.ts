@@ -1,8 +1,16 @@
-import { categoryApi, type Category } from './category';
 import { userApi } from './user';
 import type { LoginResponse, MeResponse, RegisterPayload, LoginPayload } from './user';
-export { categoryApi, userApi };
-export type { Category, LoginResponse, MeResponse, RegisterPayload, LoginPayload };
+import type { ImageItem, ImageUploadProps } from './media';
+
+export { userApi };
+export type {
+  LoginResponse,
+  MeResponse,
+  RegisterPayload,
+  LoginPayload,
+  ImageItem,
+  ImageUploadProps,
+};
 
 export interface ApiResponse<T> {
   success: boolean;

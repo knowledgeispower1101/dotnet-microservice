@@ -1,7 +1,13 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { userApi } from '@/services';
-import type { ApiError, ApiResponse } from '@/services';
-import type { LoginPayload, LoginResponse, MeResponse, RegisterPayload } from '@/services';
+import type {
+  LoginPayload,
+  LoginResponse,
+  MeResponse,
+  RegisterPayload,
+  ApiError,
+  ApiResponse,
+} from '@/services';
 import { AxiosError } from 'axios';
 
 const authHooks = {
@@ -21,6 +27,7 @@ const authHooks = {
       queryFn: userApi.getCurrentUser,
       retry: false,
     }),
+
   useLogout: () =>
     useMutation({
       mutationFn: userApi.logout,

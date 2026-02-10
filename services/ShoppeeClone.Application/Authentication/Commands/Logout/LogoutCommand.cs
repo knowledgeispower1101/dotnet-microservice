@@ -4,6 +4,7 @@ using MediatR;
 using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Application.Common.Response;
 
-public record LogoutCommands(
+public record LogoutCommand
+(
     string RefreshToken
 ) : IRequest<BaseResponse<string>>, ITransactionalRequest;

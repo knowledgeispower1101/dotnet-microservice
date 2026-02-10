@@ -1,4 +1,4 @@
-using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Application.Authentication.Persistence;
 
 namespace ShoppeeClone.Infrastructure.Authentication.Password;
 

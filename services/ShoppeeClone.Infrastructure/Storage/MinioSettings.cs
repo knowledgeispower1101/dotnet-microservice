@@ -1,4 +1,4 @@
-namespace ShoppeeClone.Infrastructure.ObjectStorage;
+namespace ShoppeeClone.Infrastructure.Storage;
 
 public class MinioSettings
 {
