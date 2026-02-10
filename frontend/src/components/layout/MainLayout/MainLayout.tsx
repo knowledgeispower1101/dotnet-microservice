@@ -1,4 +1,4 @@
-import { LoginModal, Navbar, RegisterModal } from '@/components';
+import { LoginModal, Navbar, RegisterModal, RentModal } from '@/components';
 import { useAuthInit } from '@/hooks';
 import { ToasterProvider } from '@/providers';
 
@@ -8,6 +8,7 @@ const MainLayout = () => {
     <>
       <ToasterProvider />
       <Navbar />
+      <RentModal />
       <LoginModal />
       <RegisterModal />
       {/* 

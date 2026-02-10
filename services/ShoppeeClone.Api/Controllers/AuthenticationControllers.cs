@@ -17,7 +17,7 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterRequest request)
     {
-        var command = new RegisterCommands(
+        var command = new RegisterCommand(
             request.FirstName,
             request.LastName,
             request.Email,

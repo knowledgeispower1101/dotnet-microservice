@@ -1,16 +1,16 @@
 using MediatR;
-using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Application.Authentication.Persistence;
 using ShoppeeClone.Application.Common.Response;
 
 namespace ShoppeeClone.Application.Authentication.Commands.Logout;
 
 public class LogoutCommandHandler(
         IRefreshTokenStore refreshTokenStore
-) : IRequestHandler<LogoutCommands, BaseResponse<string>>
+) : IRequestHandler<LogoutCommand, BaseResponse<string>>
 {
-    public async Task<BaseResponse<string>> Handle(LogoutCommands request, CancellationToken cancellationToken)
+    public async Task<BaseResponse<string>> Handle(LogoutCommand command, CancellationToken cancellationToken)
     {
-        string refreshToken = request.RefreshToken;
+        string refreshToken = command.RefreshToken;
         await refreshTokenStore.RemoveAsync(refreshToken);
         return BaseResponse<string>.Ok("Logout successfully");
     }

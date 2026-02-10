@@ -1,3 +1,4 @@
-export { FLASH_SALE_PRODUCTS } from './flashSale';
-export type { FlashSaleProduct } from './flashSale';
-export { SEARCH_SUGGESTIONS } from './search';
+import categories from './categories';
+export { STEPS } from './rentCreateForm';
+export type { Steps } from './rentCreateForm';
+export { categories };

@@ -4,7 +4,7 @@ using MediatR;
 using ShoppeeClone.Application.Common.Interfaces;
 using ShoppeeClone.Application.Common.Response;
 
-public record RegisterCommands(
+public record RegisterCommand(
     string FirstName,
     string LastName,
     string Email,

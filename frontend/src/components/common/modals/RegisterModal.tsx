@@ -7,12 +7,14 @@ import { Input } from '../input';
 import toast from 'react-hot-toast';
 import Button from '../Button';
 import type { RegisterPayload } from '@/services/user';
-import { registerModalStore } from '@/store';
+import { loginModalStore, registerModalStore } from '@/store';
 import type { ApiResponse } from '@/services';
 import { authHooks } from '@/hooks';
+import { useCallback } from 'react';
 
 function RegisterModal() {
   const { useRegister } = authHooks;
+  const loginModal = loginModalStore();
   const registerModal = registerModalStore();
   const { mutate: registerAction, isPending } = useRegister();
 
@@ -33,7 +35,6 @@ function RegisterModal() {
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
     registerAction(data as RegisterPayload, {
       onSuccess: (response: ApiResponse<string>) => {
-        console.log(response);
         toast.success(response.message ?? 'Login successfully');
         registerModal.onClose();
         reset();
@@ -44,6 +45,11 @@ function RegisterModal() {
     });
   };
 
+  const toggle = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
@@ -52,7 +58,7 @@ function RegisterModal() {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="justify-center flex flex-row items-center gap-2">
           <div>Already have account?</div>
-          <div className="text-neutral-800 cursor-pointer hover:underline" onClick={registerModal.onClose}>
+          <div className="text-neutral-800 cursor-pointer hover:underline" onClick={toggle}>
             Login
           </div>
         </div>

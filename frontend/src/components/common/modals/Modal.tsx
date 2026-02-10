@@ -12,7 +12,7 @@ interface Modal {
   disabled?: boolean;
   secondaryAction?: () => void;
   secondaryActionLabel?: string;
-  onResetForm: () => void;
+  onResetForm?: () => void;
 }
 function Modal({
   isOpen,
@@ -38,7 +38,7 @@ function Modal({
     setTimeout(() => {
       onClose();
     }, 300);
-    onResetForm();
+    if (onResetForm) onResetForm();
   }, [disabled, onClose, onResetForm]);
 
   const handleSubmit = useCallback(() => {
@@ -70,7 +70,7 @@ function Modal({
               <div className="flex flex-col gap-2 p-6">
                 <div className="flex flex-row items-center gap-4 w-full ">
                   {secondaryAction && secondaryActionLabel && (
-                    <Button outline disabled={disabled} label={secondaryActionLabel} onClick={handleSubmit} />
+                    <Button outline disabled={disabled} label={secondaryActionLabel} onClick={handleSecondaryAction} />
                   )}
                   <Button disabled={disabled} label={actionLabel} onClick={handleSubmit} />
                 </div>

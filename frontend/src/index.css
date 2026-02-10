@@ -123,3 +123,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+leaflet-bottom,
+leaflet-control,
+Leaflet-pane,
+leaflet-top {
+  z-index: 0 !important;
+}

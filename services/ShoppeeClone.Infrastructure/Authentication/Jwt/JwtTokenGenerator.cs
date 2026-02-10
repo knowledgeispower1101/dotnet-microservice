@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using ShoppeeClone.Application.Common.Interfaces;
+using ShoppeeClone.Application.Authentication.Persistence;
 
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
