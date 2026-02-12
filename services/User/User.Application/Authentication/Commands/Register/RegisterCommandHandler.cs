@@ -1,7 +1,6 @@
 
 using MediatR;
 using User.Application.Authentication.Persistence;
-using User.Application.Common.Errors;
 using User.Application.Common.Response;
 
 namespace User.Application.Authentication.Commands.Register;

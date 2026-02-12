@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-// using User.Domain.Entities;
-namespace User.Infrastructure;
+
+namespace Shop.Infrastructure;
 
 public sealed class AppDbContext(DbContextOptions options) : DbContext(options)
 {
+    // DbSet properties will be added here when domain entities are defined
 
     public Task BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
@@ -20,10 +21,7 @@ public sealed class AppDbContext(DbContextOptions options) : DbContext(options)
         throw new NotImplementedException();
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) => modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+    protected override void OnModelCreating(ModelBuilder modelBuilder) 
+        => modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
 
-    // Task IUnitOfWork.SaveChangesAsync(CancellationToken cancellationToken)
-    // {
-    //     return SaveChangesAsync(cancellationToken);
-    // }
 }

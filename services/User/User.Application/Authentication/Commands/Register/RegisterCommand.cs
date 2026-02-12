@@ -1,7 +1,6 @@
 namespace User.Application.Authentication.Commands.Register;
 
 using MediatR;
-using User.Application.Common.Interfaces;
 using User.Application.Common.Response;
 
 public record RegisterCommand(
@@ -9,4 +8,4 @@ public record RegisterCommand(
     string LastName,
     string Email,
     string Password
-) : IRequest<BaseResponse<string>>, ITransactionalRequest;
+) : IRequest<BaseResponse<string>>;

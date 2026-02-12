@@ -1,7 +1,7 @@
-// namespace User.Application.Common.Behaviors;
-
 // using MediatR;
-// using User.Application.Common.Interfaces;
+// using Shop.Application.Common.Interfaces;
+
+// namespace Shop.Application.Common.Behaviors;
 
 // public class TransactionBehavior<TRequest, TResponse>(IUnitOfWork unitOfWork)
 //     : IPipelineBehavior<TRequest, TResponse>
@@ -24,10 +24,7 @@
 //         try
 //         {
 //             var response = await next();
-
-//             await _unitOfWork.SaveChangesAsync(cancellationToken);
 //             await _unitOfWork.CommitAsync(cancellationToken);
-
 //             return response;
 //         }
 //         catch

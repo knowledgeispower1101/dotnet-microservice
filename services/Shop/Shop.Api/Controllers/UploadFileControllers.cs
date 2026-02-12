@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using User.Application.Upload.Commands.UploadMedia;
-namespace User.Api.Controllers;
+using Shop.Application.Upload.Commands.UploadMedia;
+namespace Shop.Api.Controllers;
 
 [ApiController]
 [Route("api/media")]
@@ -13,7 +13,6 @@ public class UploadFileControllers(ISender mediator) : ControllerBase
     public async Task<ActionResult> UploadImage([FromForm] UploadFormRequest request)
     {
         await using var stream = request.File.OpenReadStream();
-        Console.WriteLine(request.File.FileName);
         // var command = new UploadMediaCommand(
         //    stream,
         //    request.File.FileName,

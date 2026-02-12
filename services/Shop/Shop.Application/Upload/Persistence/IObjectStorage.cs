@@ -1,4 +1,4 @@
-namespace User.Application.Upload.Persistence;
+namespace Shop.Application.Upload.Persistence;
 
 public interface IObjectStorage
 {

@@ -1,18 +1,17 @@
-
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Minio;
 using StackExchange.Redis;
-using User.Application.Authentication.Persistence;
-using User.Infrastructure.Authentication.Jwt;
-using User.Infrastructure.Authentication.Password;
-using User.Infrastructure.Authentication.RefreshTokens;
-using User.Infrastructure.Cache;
-using User.Infrastructure.Repositories;
+using Shop.Application.Shop.Persistence;
+using Shop.Infrastructure.Cache;
+using Shop.Infrastructure.Repositories;
+using Shop.Infrastructure.Storage;
+using Shop.Application.Upload.Persistence;
 
-namespace User.Infrastructure;
+namespace Shop.Infrastructure;
 
 public static class DependencyInjection
 {
@@ -23,9 +22,10 @@ public static class DependencyInjection
         services
             .AddSettings(configuration)
             .AddRedis()
+            .AddMinio()
             .AddDatabase(configuration)
-            .AddRepositories()
-            .AddAuth();
+            .AddRepositories();
+
         return services;
     }
 
@@ -33,8 +33,8 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
         services.Configure<RedisSettings>(configuration.GetSection("Redis"));
+        services.Configure<MinioSettings>(configuration.GetSection("Minio"));
         return services;
     }
 
@@ -48,7 +48,22 @@ public static class DependencyInjection
             return ConnectionMultiplexer.Connect(options);
         });
 
-        services.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
+        return services;
+    }
+
+    private static IServiceCollection AddMinio(this IServiceCollection services)
+    {
+        services.AddSingleton<IMinioClient>(sp =>
+        {
+            var settings = sp.GetRequiredService<IOptions<MinioSettings>>().Value;
+
+            return new MinioClient()
+                .WithEndpoint(settings.EndPoint)
+                .WithCredentials(settings.AccessKey, settings.SecretKey)
+                .WithSSL(settings.UseSSL)
+                .Build();
+        });
+
         return services;
     }
 
@@ -59,20 +74,14 @@ public static class DependencyInjection
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
                    .UseSnakeCaseNamingConvention());
+
         return services;
     }
 
     private static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IUserRepository, UserRepo>();
-        return services;
-    }
-
-    private static IServiceCollection AddAuth(this IServiceCollection services)
-    {
-        services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-        services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
-        services.AddScoped<IRefreshTokens, CryptoRefreshTokenGenerator>();
+        services.AddScoped<IShopRepository, ShopRepository>();
+        services.AddScoped<IObjectStorage, MinioObjectStorage>();
         return services;
     }
 }

@@ -1,9 +1,9 @@
 
 using Minio;
 using Minio.DataModel.Args;
-using User.Application.Upload.Persistence;
+using Shop.Application.Upload.Persistence;
 
-namespace User.Infrastructure.Storage;
+namespace Shop.Infrastructure.Storage;
 
 public sealed class MinioObjectStorage(IMinioClient minio) : IObjectStorage
 {

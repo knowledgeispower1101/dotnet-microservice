@@ -1,8 +1,8 @@
 using MediatR;
-using User.Application.Common.Response;
-using User.Application.Upload.Persistence;
+using Shop.Application.Common.Response;
+using Shop.Application.Upload.Persistence;
 
-namespace User.Application.Upload.Commands.UploadMedia;
+namespace Shop.Application.Upload.Commands.UploadMedia;
 
 public class UploadMediaCommandHandler(
     IObjectStorage objectStorage
