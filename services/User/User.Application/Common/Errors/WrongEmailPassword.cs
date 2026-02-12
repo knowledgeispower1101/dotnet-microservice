@@ -1,6 +1,7 @@
 namespace User.Application.Common.Errors;
 
 using System.Net;
+using Shared.Application.Common.Exceptions;
 public sealed class WrongEmailPasswordException : AppException
 {
     public WrongEmailPasswordException()

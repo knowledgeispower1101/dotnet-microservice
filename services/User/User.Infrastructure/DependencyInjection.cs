@@ -4,12 +4,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shared.Infrastructure.Cache;
 using StackExchange.Redis;
 using User.Application.Authentication.Persistence;
 using User.Infrastructure.Authentication.Jwt;
 using User.Infrastructure.Authentication.Password;
 using User.Infrastructure.Authentication.RefreshTokens;
-using User.Infrastructure.Cache;
 using User.Infrastructure.Repositories;
 
 namespace User.Infrastructure;

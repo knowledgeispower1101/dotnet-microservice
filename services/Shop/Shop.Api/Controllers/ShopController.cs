@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Common.Response;
+using Shared.Application.Common.Response;
 using Shop.Application.Shop.Commands.CreateShop;
 using Shop.Contracts.Shop;
 

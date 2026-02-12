@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Shop.Api.Middleware;
+using Shared.Infrastructure.Middleware;
 using Shop.Application;
 using Shop.Infrastructure;
 

@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using User.Api.Middleware;
+using Shared.Infrastructure.Middleware;
 using User.Application;
 using User.Infrastructure;
 using User.Infrastructure.Authentication.Jwt;

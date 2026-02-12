@@ -1,8 +1,8 @@
 
 using MediatR;
+using Shared.Application.Common.Exceptions;
+using Shared.Application.Common.Response;
 using User.Application.Authentication.Persistence;
-using User.Application.Common.Errors;
-using User.Application.Common.Response;
 
 namespace User.Application.Authentication.Queries.Login;
 

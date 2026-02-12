@@ -1,6 +1,6 @@
-namespace User.Application.Common.Errors;
-
 using System.Net;
+
+namespace Shared.Application.Common.Exceptions;
 
 public sealed class BadRequestException : AppException
 {
@@ -17,4 +17,3 @@ public sealed class BadRequestException : AppException
     public override string ErrorCode => "BAD_REQUEST";
     public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 }
-

@@ -1,5 +1,5 @@
 using MediatR;
-using Shop.Application.Common.Response;
+using Shared.Application.Common.Response;
 using Shop.Application.Upload.Persistence;
 
 namespace Shop.Application.Upload.Commands.UploadMedia;

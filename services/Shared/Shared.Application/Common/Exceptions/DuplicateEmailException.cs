@@ -1,11 +1,11 @@
-namespace User.Application.Common.Errors;
-
 using System.Net;
+
+namespace Shared.Application.Common.Exceptions;
 
 public sealed class DuplicateEmailException : AppException
 {
-    public DuplicateEmailException()
-        : base("Email already existed")
+    public DuplicateEmailException(string email)
+        : base($"Email '{email}' is already registered")
     {
     }
 

@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace User.Application.Common.Errors;
+namespace Shared.Application.Common.Exceptions;
 
 public abstract class AppException(string message) : Exception(message)
 {

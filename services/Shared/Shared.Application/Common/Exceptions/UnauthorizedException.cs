@@ -1,11 +1,11 @@
-namespace User.Application.Common.Errors;
-
 using System.Net;
+
+namespace Shared.Application.Common.Exceptions;
 
 public sealed class UnauthorizedException : AppException
 {
     public UnauthorizedException()
-        : base("Unauthorized request")
+        : base("Unauthorized")
     {
     }
 
@@ -14,7 +14,6 @@ public sealed class UnauthorizedException : AppException
     {
     }
 
-    public override string ErrorCode => "UNAUTHORIZED_REQUEST";
+    public override string ErrorCode => "UNAUTHORIZED";
     public override HttpStatusCode StatusCode => HttpStatusCode.Unauthorized;
 }
-

@@ -1,7 +1,7 @@
 namespace User.Application.Authentication.Commands.Register;
 
 using MediatR;
-using User.Application.Common.Response;
+using Shared.Application.Common.Response;
 
 public record RegisterCommand(
     string FirstName,

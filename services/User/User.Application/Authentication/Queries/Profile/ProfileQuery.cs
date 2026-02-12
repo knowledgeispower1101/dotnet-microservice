@@ -1,5 +1,5 @@
 using MediatR;
-using User.Application.Common.Response;
+using Shared.Application.Common.Response;
 
 namespace User.Application.Authentication.Queries.Profile;
 

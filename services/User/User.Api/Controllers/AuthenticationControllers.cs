@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using User.Application.Authentication.Commands.Register;
 using User.Application.Authentication.Queries.Login;
 using User.Application.Authentication.Queries.Profile;
-using User.Application.Common.Errors;
+using Shared.Application.Common.Exceptions;
 using User.Constracts.Authentication;
 
 namespace User.Api.Controllers;

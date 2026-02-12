@@ -1,6 +1,6 @@
 
 using MediatR;
-using Shop.Application.Common.Response;
+using Shared.Application.Common.Response;
 
 namespace Shop.Application.Upload.Commands.UploadMedia;
 

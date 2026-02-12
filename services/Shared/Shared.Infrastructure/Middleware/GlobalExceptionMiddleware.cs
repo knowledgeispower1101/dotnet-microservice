@@ -1,6 +1,9 @@
-using User.Application.Common.Errors;
+using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Shared.Application.Common.Exceptions;
 
-namespace User.Api.Middleware;
+namespace Shared.Infrastructure.Middleware;
 
 public sealed class GlobalExceptionMiddleware(
     RequestDelegate next,
@@ -9,7 +12,7 @@ public sealed class GlobalExceptionMiddleware(
     private readonly RequestDelegate _next = next;
     private readonly ILogger<GlobalExceptionMiddleware> _logger = logger;
 
-    public async Task Invoke(HttpContext context)
+    public async Task InvokeAsync(HttpContext context)
     {
         try
         {
@@ -17,14 +20,18 @@ public sealed class GlobalExceptionMiddleware(
         }
         catch (AppException ex)
         {
+            _logger.LogWarning(ex, "Application exception: {ErrorCode}", ex.ErrorCode);
+            
             context.Response.StatusCode = (int)ex.StatusCode;
             context.Response.ContentType = "application/json";
 
-            await context.Response.WriteAsJsonAsync(new ErrorResponse
+            var errorResponse = new ErrorResponse
             {
                 StatusCode = ex.ErrorCode,
                 Message = ex.Message
-            });
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
         }
         catch (Exception ex)
         {
@@ -33,11 +40,13 @@ public sealed class GlobalExceptionMiddleware(
             context.Response.StatusCode = StatusCodes.Status500InternalServerError;
             context.Response.ContentType = "application/json";
 
-            await context.Response.WriteAsJsonAsync(new ErrorResponse
+            var errorResponse = new ErrorResponse
             {
                 StatusCode = "INTERNAL_SERVER_ERROR",
                 Message = "Unexpected error occurred"
-            });
+            };
+
+            await context.Response.WriteAsync(JsonSerializer.Serialize(errorResponse));
         }
     }
 

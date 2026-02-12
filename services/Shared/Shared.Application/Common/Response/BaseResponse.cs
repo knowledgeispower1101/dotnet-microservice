@@ -1,4 +1,4 @@
-namespace User.Application.Common.Response;
+namespace Shared.Application.Common.Response;
 
 public class BaseResponse<T>
 {
@@ -11,17 +11,21 @@ public class BaseResponse<T>
     {
         Success = true,
         Data = data,
-        Message = message
+        Message = message ?? "Success"
     };
-    public static BaseResponse<T> Ok(string? message = null) => new()
-    {
-        Success = true,
-        Message = message
-    };
-    public static BaseResponse<T> Fail(string message, string? errorCode = null) => new()
+
+    public static BaseResponse<T> Fail(string errorCode, string message) => new()
     {
         Success = false,
+        ErrorCode = errorCode,
+        Message = message
+    };
+
+    public static BaseResponse<T> Fail(string errorCode, string message, T? data) => new()
+    {
+        Success = false,
+        ErrorCode = errorCode,
         Message = message,
-        ErrorCode = errorCode
+        Data = data
     };
 }
