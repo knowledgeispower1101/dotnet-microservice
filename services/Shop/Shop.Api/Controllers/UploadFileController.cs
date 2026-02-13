@@ -4,7 +4,7 @@ namespace Shop.Api.Controllers;
 
 [ApiController]
 [Route("api/media")]
-public class UploadFileControllers(ISender mediator) : ControllerBase
+public class UploadFileController(ISender mediator) : ControllerBase
 {
     private readonly ISender _mediator = mediator;
 
