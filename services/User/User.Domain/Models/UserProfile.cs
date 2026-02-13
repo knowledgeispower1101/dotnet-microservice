@@ -1,4 +1,4 @@
-﻿namespace User.Infrastructure.Models;
+﻿namespace User.Domain.Models;
 
 public partial class UserProfile
 {
@@ -30,5 +30,5 @@ public partial class UserProfile
 
     public DateTime? UpdatedAt { get; set; }
 
-    public virtual UsersApp User { get; set; } = null!;
+    public UsersApp User { get; set; } = null!;
 }

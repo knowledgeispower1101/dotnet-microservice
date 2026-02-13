@@ -1,4 +1,4 @@
-﻿namespace User.Infrastructure.Models;
+﻿namespace User.Domain.Models;
 
 public partial class UserRole
 {
@@ -8,7 +8,7 @@ public partial class UserRole
 
     public DateTime? AssignedAt { get; set; }
 
-    public virtual Role Role { get; set; } = null!;
+    public Role Role { get; set; } = null!;
 
-    public virtual UsersApp User { get; set; } = null!;
+    public UsersApp User { get; set; } = null!;
 }

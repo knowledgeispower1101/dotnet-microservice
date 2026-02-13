@@ -1,4 +1,4 @@
-﻿namespace User.Infrastructure.Models;
+﻿namespace User.Domain.Models;
 
 public partial class Role
 {
@@ -10,7 +10,7 @@ public partial class Role
 
     public DateTime? CreatedAt { get; set; }
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } =  [];
+    public ICollection<UserRole> UserRoles { get; set; } = [];
 
-    public virtual ICollection<Permission> Permissions { get; set; } = [];
+    public ICollection<Permission> Permissions { get; set; } = [];
 }

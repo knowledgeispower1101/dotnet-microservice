@@ -1,4 +1,4 @@
-﻿namespace User.Infrastructure.Models;
+﻿namespace User.Domain.Models;
 
 public partial class UsersApp
 {
@@ -26,7 +26,7 @@ public partial class UsersApp
 
     public DateTime? LastLoginAt { get; set; }
 
-    public virtual UserProfile? UserProfile { get; set; }
+    public UserProfile? UserProfile { get; set; }
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public ICollection<UserRole> UserRoles { get; set; } = [];
 }

@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using User.Infrastructure.Models;
+using User.Domain.Models;
 
 namespace User.Infrastructure;
 
 public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
-    public virtual DbSet<Permission> Permissions { get; set; } = null!;
+    public   DbSet<Permission> Permissions { get; set; } = null!;
 
-    public virtual DbSet<Role> Roles { get; set; } = null!;
+    public   DbSet<Role> Roles { get; set; } = null!;
 
-    public virtual DbSet<UserProfile> UserProfiles { get; set; } = null!;
+    public   DbSet<UserProfile> UserProfiles { get; set; } = null!;
 
-    public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
+    public   DbSet<UserRole> UserRoles { get; set; } = null!;
 
-    public virtual DbSet<UsersApp> UsersApps { get; set; } = null!;
+    public   DbSet<UsersApp> UsersApps { get; set; } = null!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
