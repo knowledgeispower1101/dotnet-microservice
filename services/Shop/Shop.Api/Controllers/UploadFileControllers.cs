@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Shop.Application.Upload.Commands.UploadMedia;
 namespace Shop.Api.Controllers;
 
 [ApiController]
