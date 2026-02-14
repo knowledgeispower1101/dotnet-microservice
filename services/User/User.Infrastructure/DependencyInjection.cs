@@ -4,13 +4,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Shared.Application.Common.Interface;
 using Shared.Infrastructure.Cache;
 using StackExchange.Redis;
 using User.Application.Authentication.Persistence;
 using User.Infrastructure.Authentication.Jwt;
 using User.Infrastructure.Authentication.Password;
 using User.Infrastructure.Authentication.RefreshTokens;
-using User.Infrastructure.Repositories;
+using User.Infrastructure.Repository;
 
 namespace User.Infrastructure;
 
@@ -24,7 +25,7 @@ public static class DependencyInjection
             .AddSettings(configuration)
             .AddRedis()
             .AddDatabase(configuration)
-            .AddRepositories()
+            .AddRepositoriesAndServices()
             .AddAuth();
         return services;
     }
@@ -62,9 +63,10 @@ public static class DependencyInjection
         return services;
     }
 
-    private static IServiceCollection AddRepositories(this IServiceCollection services)
+    private static IServiceCollection AddRepositoriesAndServices(this IServiceCollection services)
     {
         services.AddScoped<IUserRepository, UserRepo>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         return services;
     }
 

@@ -21,7 +21,9 @@ public class AuthenticationControllers(ISender mediator) : ControllerBase
             request.FirstName,
             request.LastName,
             request.Email,
-            request.Password);
+            request.Password,
+            request.PhoneNumber,
+            request.UserName);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
