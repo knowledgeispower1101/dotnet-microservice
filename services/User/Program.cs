@@ -1,0 +1,59 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Shared.Infrastructure.Middleware;
+using User;
+using User.Services.Authentication;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddUserServices(builder.Configuration)
+    .AddControllers();
+
+var jwtSettings = builder.Configuration
+    .GetSection("JWT_SETTINGS")
+    .Get<JwtSettings>()!;
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme);
+// .AddJwtBearer(options =>
+// {
+//     options.TokenValidationParameters = new TokenValidationParameters
+//     {
+//         ValidateIssuer = true,
+//         ValidateAudience = true,
+//         ValidateLifetime = true,
+//         ValidateIssuerSigningKey = true,
+
+//         ValidIssuer = jwtSettings.Issuer,
+//         ValidAudience = jwtSettings.Audience,
+//         IssuerSigningKey = new SymmetricSecurityKey(
+//             Encoding.UTF8.GetBytes(jwtSettings.SecreteKey)
+//         )
+//     };
+// });
+
+// builder.Services.AddAuthorization();
+
+
+var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
+// app.UseHttpsRedirection();
+app.UseCors("CorsPolicy");
+
+// app.UseAuthentication();
+// app.UseAuthorization();
+
+app.MapControllers();
+app.Run();
