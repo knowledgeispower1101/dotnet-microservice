@@ -1,46 +1,36 @@
 using Shared.Application.Common.Exceptions;
-using Shared.Application.Common.Interface;
 using Shared.Application.Common.Response;
+using User.DTOs;
 using User.Interfaces;
 using User.Models;
+using Microsoft.EntityFrameworkCore;
+using User.Data;
 
 namespace User.Services;
 
-public class AuthService : IAuthService
+public class AuthService(
+    IJwtTokenGenerator jwtTokenGenerator,
+    IPasswordHasher passwordHasher,
+    IRefreshTokens refreshTokens,
+    IRefreshTokenStore refreshTokenStore,
+    AppDbContext dbContext) : IAuthService
 {
-    private readonly IJwtTokenGenerator _jwtTokenGenerator;
-    private readonly IUserRepository _userRepository;
-    private readonly IPasswordHasher _passwordHasher;
-    private readonly IRefreshTokens _refreshTokens;
-    private readonly IRefreshTokenStore _refreshTokenStore;
-    private readonly IUnitOfWork _unitOfWork;
-
-    public AuthService(
-        IJwtTokenGenerator jwtTokenGenerator,
-        IUserRepository userRepository,
-        IPasswordHasher passwordHasher,
-        IRefreshTokens refreshTokens,
-        IRefreshTokenStore refreshTokenStore,
-        IUnitOfWork unitOfWork)
-    {
-        _jwtTokenGenerator = jwtTokenGenerator;
-        _userRepository = userRepository;
-        _passwordHasher = passwordHasher;
-        _refreshTokens = refreshTokens;
-        _refreshTokenStore = refreshTokenStore;
-        _unitOfWork = unitOfWork;
-    }
-
-    public async Task<BaseResponse<LoginResponse>> LoginAsync(string email, string password)
+    private static readonly string GUEST = "guest";
+    private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
+    private readonly IPasswordHasher _passwordHasher = passwordHasher;
+    private readonly IRefreshTokens _refreshTokens = refreshTokens;
+    private readonly IRefreshTokenStore _refreshTokenStore = refreshTokenStore;
+    private readonly AppDbContext _context = dbContext;
+    public async Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request)
     {
         // Commented out original logic - keeping the mock response for now
         // var user = await _userRepository.GetUserByEmail(email);
         // if (user is null || !_passwordHasher.Verify(password, user.PasswordHash)) 
         //     throw new WrongEmailPasswordException();
-        
+
         // string refreshToken = _refreshTokens.Generate();
         // await _refreshTokenStore.SaveAsync(user.Id, refreshToken);
-        
+
         // var accessToken = _jwtTokenGenerator.GenerateToken(
         //     user.Id,
         //     user.FirstName,
@@ -56,47 +46,8 @@ public class AuthService : IAuthService
             "user.LastName",
             "user.FirstName"
         );
-        
+
         return BaseResponse<LoginResponse>.Ok(loginResponse, "Login successfully");
-    }
-
-    public async Task<BaseResponse<string>> RegisterAsync(
-        string username, 
-        string email, 
-        string password, 
-        string firstName, 
-        string lastName, 
-        string phoneNumber)
-    {
-        await _unitOfWork.BeginTransactionAsync(CancellationToken.None);
-        try
-        {
-            if (await _userRepository.GetUserByEmail(email) is not null)
-                throw new DuplicateEmailException(email);
-
-            string hashedPassword = _passwordHasher.Hash(password);
-
-            _userRepository.Add(new UsersApp
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                Email = email,
-                PasswordHash = hashedPassword,
-                PhoneNumber = phoneNumber,
-                Username = username
-            });
-
-            await _unitOfWork.CommitAsync(CancellationToken.None);
-
-            return BaseResponse<string>.Ok(
-                "Your account has been successfully created",
-                "Register success");
-        }
-        catch
-        {
-            await _unitOfWork.RollbackAsync(CancellationToken.None);
-            throw;
-        }
     }
 
     public async Task<BaseResponse<string>> LogoutAsync(Guid userId)
@@ -106,4 +57,57 @@ public class AuthService : IAuthService
         // await _refreshTokenStore.RemoveAsync(refreshTokenHash);
         return BaseResponse<string>.Ok("Logout successfully", "Logout success");
     }
+
+    public async Task<BaseResponse<string>> UserRegisterAsync(RegisterRequest request)
+    {
+        await using var transaction = await _context.Database.BeginTransactionAsync();
+
+        try
+        {
+            if (await _context.UsersApp
+                .AsNoTracking()
+                .AnyAsync(x => x.Email == request.Email))
+                throw new DuplicateEmailException(request.Email);
+
+            string hashedPassword = _passwordHasher.Hash(request.Password);
+
+            var user = new UsersApp(
+                request.FirstName,
+                request.LastName,
+                request.Email,
+                hashedPassword,
+                request.PhoneNumber,
+                request.UserName
+            );
+
+            Role guest = await _context.Roles
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.RoleName.Equals(GUEST, StringComparison.CurrentCultureIgnoreCase))
+                ?? throw new BadRequestException("Guest role not found");
+
+            user.UserProfile = new UserProfile(user.Id);
+
+            var userRole = new UserRole(user.Id, guest.Id);
+            user.UserRoles.Add(userRole);
+
+            _context.UsersApp.Add(user);
+
+            await _context.SaveChangesAsync();
+
+            await transaction.CommitAsync();
+
+            return BaseResponse<string>.Ok(
+                "Your account has been successfully created",
+                "Register success");
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            throw;
+        }
+    }
+
+
+
+
 }

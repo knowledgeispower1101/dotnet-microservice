@@ -13,7 +13,7 @@ public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbCo
 
     public virtual DbSet<UserRole> UserRoles { get; set; }
 
-    public virtual DbSet<UsersApp> UsersApps { get; set; }
+    public virtual DbSet<UsersApp> UsersApp { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -148,7 +148,8 @@ public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbCo
                 .HasColumnName("updated_at");
             entity.Property(e => e.UserId).HasColumnName("user_id");
 
-            entity.HasOne(d => d.User).WithOne(p => p.UserProfile)
+            entity.HasOne(d => d.User)
+                .WithOne(p => p.UserProfile)
                 .HasForeignKey<UserProfile>(d => d.UserId)
                 .HasConstraintName("user_profiles_user_id_fkey");
         });

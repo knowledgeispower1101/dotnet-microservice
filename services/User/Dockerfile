@@ -5,9 +5,7 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy Shared projects first
-COPY Shared/Shared.Domain/Shared.Domain.csproj Shared/Shared.Domain/
-COPY Shared/Shared.Application/Shared.Application.csproj Shared/Shared.Application/
-COPY Shared/Shared.Infrastructure/Shared.Infrastructure.csproj Shared/Shared.Infrastructure/
+
 
 # Copy User project file
 COPY User/User.csproj User/

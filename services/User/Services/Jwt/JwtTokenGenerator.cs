@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using User.Interfaces;
 
-namespace User.Services.Authentication;
+namespace User.Services.Jwt;
 
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
@@ -13,7 +13,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
     public string GenerateToken(int userId, string firstName, string lastName, string email)
     {
         var signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecreteKey)),
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
             SecurityAlgorithms.HmacSha256
         );
         var claims = new List<Claim>

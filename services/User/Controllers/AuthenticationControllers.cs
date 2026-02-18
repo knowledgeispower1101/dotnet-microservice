@@ -13,25 +13,16 @@ public class AuthenticationControllers(IAuthService authService) : ControllerBas
     private readonly IAuthService _authService = authService;
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register(RegisterRequest request)
+    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var result = await _authService.RegisterAsync(
-            request.UserName,
-            request.Email,
-            request.Password,
-            request.FirstName,
-            request.LastName,
-            request.PhoneNumber);
+        var result = await _authService.UserRegisterAsync(request);
         return Ok(result);
     }
 
     [HttpPost("login")]
     public async Task<ActionResult> Login(LoginRequest request)
     {
-        var response = await _authService.LoginAsync(
-            request.Email,
-            request.Password
-        );
+        var response = await _authService.LoginAsync(request);
         Response.Cookies.Append(
             "refreshToken",
             response.Data!.RefreshToken,
@@ -47,26 +38,28 @@ public class AuthenticationControllers(IAuthService authService) : ControllerBas
     }
 
     [HttpGet("profile")]
-    public async Task<ActionResult> CurrentUser()
+    public Task<ActionResult> CurrentUser()
     {
-        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) 
-            throw new BadRequestException();
-        
+        throw new NotImplementedException();
+
+        // if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+        //     throw new BadRequestException();
+
         // TODO: Implement profile retrieval using refreshToken
         // This would require IUserService.GetProfileAsync implementation
-        return Ok("Profile endpoint - implementation pending");
+        // return Ok("Profile endpoint - implementation pending");
     }
 
     [HttpPost("logout")]
     public async Task<ActionResult> Logout()
     {
-        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken)) 
+        if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
             throw new BadRequestException();
-        
+
         // TODO: Extract userId from refreshToken
         // For now, using a placeholder
         var userId = Guid.Empty; // This should be extracted from the refresh token
-        
+
         var response = await _authService.LogoutAsync(userId);
         Response.Cookies.Append(
             "refreshToken",

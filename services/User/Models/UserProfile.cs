@@ -5,6 +5,13 @@ namespace User.Models;
 
 public partial class UserProfile
 {
+
+    private UserProfile() { }
+
+    public UserProfile(Guid userId)
+    {
+        UserId = userId;
+    }
     public Guid Id { get; set; }
 
     public Guid UserId { get; set; }

@@ -2,6 +2,18 @@
 
 public partial class UsersApp
 {
+    private UsersApp() { }
+
+    public UsersApp(string firstName, string lastName, string email, string hashedPassword, string phoneNumber, string userName)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Email = email;
+        PasswordHash = hashedPassword;
+        PhoneNumber = phoneNumber;
+        Username = userName;
+    }
+
     public Guid Id { get; set; }
 
     public string Username { get; set; } = null!;
@@ -30,5 +42,5 @@ public partial class UsersApp
 
     public virtual UserProfile? UserProfile { get; set; }
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public virtual ICollection<UserRole> UserRoles { get; set; } = [];
 }

@@ -1,11 +1,12 @@
 using Shared.Application.Common.Response;
+using User.DTOs;
 
 namespace User.Interfaces;
 
 public interface IAuthService
 {
-    Task<BaseResponse<LoginResponse>> LoginAsync(string email, string password);
-    Task<BaseResponse<string>> RegisterAsync(string username, string email, string password, string firstName, string lastName, string phoneNumber);
+    Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request);
+    Task<BaseResponse<string>> UserRegisterAsync(RegisterRequest request);
     Task<BaseResponse<string>> LogoutAsync(Guid userId);
 }
 

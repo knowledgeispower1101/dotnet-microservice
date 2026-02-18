@@ -1,10 +1,9 @@
-namespace User.Services.Authentication;
-
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using User.Services.Authentication;
 using StackExchange.Redis;
 using User.Interfaces;
+using User.Services.Jwt;
+
+namespace User.Services.Authentication;
 
 public class RedisRefreshTokenStore(IConnectionMultiplexer redis, IOptions<JwtSettings> options) : IRefreshTokenStore
 {
