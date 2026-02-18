@@ -68,10 +68,10 @@ services:
       ASPNETCORE_ENVIRONMENT: Development
       ConnectionStrings__DefaultConnection: "Host=postgres-ecommerce;Port=5432;Database=ecommerce_db;Username=ecommerce_user;Password=ecommerce_pass"
       Redis__Connection: "redis:6379"
-      JwtSettings__Issuer: "your-issuer"
-      JwtSettings__Audience: "your-audience"
-      JwtSettings__SecreteKey: "your-super-secret-key-min-32-characters-long"
-      JwtSettings__ExpiryMinutes: "60"
+      JWT_SETTINGS__Issuer: "your-issuer"
+      JWT_SETTINGS__Audience: "your-audience"
+      JWT_SETTINGS__SecretKey: "your-super-secret-key-min-32-characters-long"
+      JWT_SETTINGS__ExpiryMinutes: "60"
     depends_on:
       postgres-ecommerce:
         condition: service_healthy
