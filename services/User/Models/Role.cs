@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace User.Models;
+﻿namespace User.Models;
 
 public partial class Role
 {
@@ -17,7 +14,7 @@ public partial class Role
 
     public DateTime? DeletedAt { get; set; }
 
-    public virtual ICollection<UserRole> UserRoles { get; set; } = new List<UserRole>();
+    public virtual ICollection<UserRole> UserRoles { get; set; } = [];
 
-    public virtual ICollection<Permission> Permissions { get; set; } = new List<Permission>();
+    public virtual ICollection<Permission> Permissions { get; set; } = [];
 }

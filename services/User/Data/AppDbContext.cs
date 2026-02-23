@@ -91,8 +91,8 @@ public partial class AppDbContext(DbContextOptions<AppDbContext> options) : DbCo
                     {
                         j.HasKey("RoleId", "PermissionId").HasName("role_permissions_pkey");
                         j.ToTable("role_permissions", "user_schema");
-                        j.HasIndex(new[] { "PermissionId" }, "idx_role_permissions_permission_id");
-                        j.HasIndex(new[] { "RoleId" }, "idx_role_permissions_role_id");
+                        j.HasIndex([ "PermissionId" ], "idx_role_permissions_permission_id");
+                        j.HasIndex([ "RoleId" ], "idx_role_permissions_role_id");
                         j.IndexerProperty<Guid>("RoleId").HasColumnName("role_id");
                         j.IndexerProperty<Guid>("PermissionId").HasColumnName("permission_id");
                     });

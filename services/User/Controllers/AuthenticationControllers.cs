@@ -37,17 +37,11 @@ public class AuthenticationControllers(IAuthService authService) : ControllerBas
         return Ok(response);
     }
 
-    [HttpGet("profile")]
-    public Task<ActionResult> CurrentUser()
+    [HttpGet("verify")]
+    public Task<bool> VerifyToken()
     {
-        throw new NotImplementedException();
-
-        // if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
-        //     throw new BadRequestException();
-
-        // TODO: Implement profile retrieval using refreshToken
-        // This would require IUserService.GetProfileAsync implementation
-        // return Ok("Profile endpoint - implementation pending");
+        var request = Request;
+        return _authService.VerifyToken(request);
     }
 
     [HttpPost("logout")]
@@ -56,11 +50,7 @@ public class AuthenticationControllers(IAuthService authService) : ControllerBas
         if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
             throw new BadRequestException();
 
-        // TODO: Extract userId from refreshToken
-        // For now, using a placeholder
-        var userId = Guid.Empty; // This should be extracted from the refresh token
-
-        var response = await _authService.LogoutAsync(userId);
+        var response = await _authService.LogoutAsync(refreshToken);
         Response.Cookies.Append(
             "refreshToken",
             "",

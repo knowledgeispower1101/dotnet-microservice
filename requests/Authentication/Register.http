@@ -1,12 +1,13 @@
-@host=http://localhost:5287
+@host=http://localhost
 
 POST {{host}}/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "12333322@gmail.com",
+    "email": "swsr4wq123@gmail.com",
     "password": "123",
     "firstName": "Hung",
-    "lastName": "Nguyen"
+    "lastName": "Nguyen",
+    "userName": "conmua4ngangqua",
+    "phoneNumber": "0123456789"
 }
-

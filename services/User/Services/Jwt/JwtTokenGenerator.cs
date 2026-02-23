@@ -10,7 +10,8 @@ namespace User.Services.Jwt;
 public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerator
 {
     private readonly JwtSettings _options = options.Value;
-    public string GenerateToken(int userId, string firstName, string lastName, string email)
+
+    public string GenerateToken(Guid userId, string firstName, string lastName, string email)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
@@ -33,5 +34,32 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
         );
 
         return new JwtSecurityTokenHandler().WriteToken(securityToken);
+    }
+
+    public bool ValidateToken(string token)
+    {
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
+
+        try
+        {
+            tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _options.Issuer,
+                ValidAudience = _options.Audience,
+                IssuerSigningKey = key,
+                ClockSkew = TimeSpan.Zero
+            }, out _);
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

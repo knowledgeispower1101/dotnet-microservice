@@ -42,6 +42,7 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
 builder.Services.AddScoped<IRefreshTokenStore, RedisRefreshTokenStore>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -83,6 +84,15 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+// Ensure DB schema exists on startup (safety net for fresh environments).
+// The postgres/init-user.sql script handles this for Docker; EnsureCreated()
+// is a no-op when tables already exist.
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated();
+}
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseCors("CorsPolicy");

@@ -4,14 +4,9 @@ using User.Models;
 
 namespace User.Services;
 
-public class UserService : IUserService
+public class UserService(IUserRepository userRepository) : IUserService
 {
-    private readonly IUserRepository _userRepository;
-
-    public UserService(IUserRepository userRepository)
-    {
-        _userRepository = userRepository;
-    }
+    private readonly IUserRepository _userRepository = userRepository;
 
     public async Task<BaseResponse<UserProfile>> CreateProfileAsync(Guid userId, UserProfile profile)
     {

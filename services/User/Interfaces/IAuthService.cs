@@ -7,11 +7,12 @@ public interface IAuthService
 {
     Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request);
     Task<BaseResponse<string>> UserRegisterAsync(RegisterRequest request);
-    Task<BaseResponse<string>> LogoutAsync(Guid userId);
+    Task<BaseResponse<string>> LogoutAsync(string refreshToken);
+    Task<bool> VerifyToken(HttpRequest request);
 }
 
 public record LoginResponse(
-    int Id,
+    Guid Id,
     string Email,
     string AccessToken,
     string RefreshToken,

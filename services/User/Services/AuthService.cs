@@ -15,46 +15,48 @@ public class AuthService(
     IRefreshTokenStore refreshTokenStore,
     AppDbContext dbContext) : IAuthService
 {
-    private static readonly string GUEST = "guest";
+    private static readonly string GUEST = "GUEST";
     private readonly IJwtTokenGenerator _jwtTokenGenerator = jwtTokenGenerator;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
     private readonly IRefreshTokens _refreshTokens = refreshTokens;
     private readonly IRefreshTokenStore _refreshTokenStore = refreshTokenStore;
     private readonly AppDbContext _context = dbContext;
+
     public async Task<BaseResponse<LoginResponse>> LoginAsync(LoginRequest request)
     {
-        // Commented out original logic - keeping the mock response for now
-        // var user = await _userRepository.GetUserByEmail(email);
-        // if (user is null || !_passwordHasher.Verify(password, user.PasswordHash)) 
-        //     throw new WrongEmailPasswordException();
+        var user = await _context.UsersApp
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Email == request.Email)
+            ?? throw new UnauthorizedException("Invalid email or password");
 
-        // string refreshToken = _refreshTokens.Generate();
-        // await _refreshTokenStore.SaveAsync(user.Id, refreshToken);
+        if (!_passwordHasher.Verify(request.Password, user.PasswordHash))
+            throw new UnauthorizedException("Invalid email or password");
 
-        // var accessToken = _jwtTokenGenerator.GenerateToken(
-        //     user.Id,
-        //     user.FirstName,
-        //     user.LastName,
-        //     user.Email
-        // );
+        string accessToken = _jwtTokenGenerator.GenerateToken(
+            user.Id,
+            user.FirstName ?? string.Empty,
+            user.LastName ?? string.Empty,
+            user.Email
+        );
 
-        LoginResponse loginResponse = new(
-            1,
-            "query.Email",
-            "accessToken",
-            "refreshToken",
-            "user.LastName",
-            "user.FirstName"
+        string refreshToken = _refreshTokens.Generate();
+        await _refreshTokenStore.SaveAsync(user.Id, refreshToken);
+
+        var loginResponse = new LoginResponse(
+            user.Id,
+            user.Email,
+            accessToken,
+            refreshToken,
+            user.LastName ?? string.Empty,
+            user.FirstName ?? string.Empty
         );
 
         return BaseResponse<LoginResponse>.Ok(loginResponse, "Login successfully");
     }
 
-    public async Task<BaseResponse<string>> LogoutAsync(Guid userId)
+    public async Task<BaseResponse<string>> LogoutAsync(string refreshToken)
     {
-        // TODO: Get refresh token hash from userId or pass it as parameter
-        // For now, this is a placeholder implementation
-        // await _refreshTokenStore.RemoveAsync(refreshTokenHash);
+        await _refreshTokenStore.RemoveAsync(refreshToken);
         return BaseResponse<string>.Ok("Logout successfully", "Logout success");
     }
 
@@ -82,7 +84,7 @@ public class AuthService(
 
             Role guest = await _context.Roles
                 .AsNoTracking()
-                .FirstOrDefaultAsync(r => r.RoleName.Equals(GUEST, StringComparison.CurrentCultureIgnoreCase))
+                .FirstOrDefaultAsync(r => r.RoleName == GUEST)
                 ?? throw new BadRequestException("Guest role not found");
 
             user.UserProfile = new UserProfile(user.Id);
@@ -107,7 +109,26 @@ public class AuthService(
         }
     }
 
+    public Task<bool> VerifyToken(HttpRequest request)
+    {
+        string? token = null;
 
+        if (request.Headers.TryGetValue("Authorization", out var authHeader))
+        {
+            var value = authHeader.ToString();
+            if (value.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                token = value["Bearer ".Length..].Trim();
+        }
+        else if (request.Headers.TryGetValue("accessToken", out var rawToken))
+        {
+            token = rawToken.ToString();
+        }
 
+        if (string.IsNullOrWhiteSpace(token))
+            throw new BadRequestException("Missing or malformed token");
 
+        bool isValid = _jwtTokenGenerator.ValidateToken(token);
+        return Task.FromResult(isValid);
+    }
 }
+
