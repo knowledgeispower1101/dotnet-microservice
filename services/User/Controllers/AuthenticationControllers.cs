@@ -20,7 +20,7 @@ public class AuthenticationControllers(IAuthService authService) : ControllerBas
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login(LoginRequest request)
+    public async Task<ActionResult> Login([FromBody] LoginRequest request)
     {
         var response = await _authService.LoginAsync(request);
         Response.Cookies.Append(

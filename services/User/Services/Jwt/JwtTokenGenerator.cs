@@ -11,7 +11,7 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
 {
     private readonly JwtSettings _options = options.Value;
 
-    public string GenerateToken(Guid userId, string firstName, string lastName, string email)
+    public string GenerateToken(Guid userId, string firstName, string lastName, string email, string username, string[] listRole)
     {
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
@@ -22,12 +22,18 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
             new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.GivenName, firstName),
             new(JwtRegisteredClaimNames.FamilyName, lastName),
-            new(JwtRegisteredClaimNames.Email, email)
+            new(JwtRegisteredClaimNames.Email, email),
+            new(JwtRegisteredClaimNames.PreferredUsername, username),
         };
+
+        foreach (var role in listRole)
+        {
+            claims.Add(new Claim("role", role));
+        }
 
         var securityToken = new JwtSecurityToken(
             issuer: _options.Issuer,
-            expires: DateTime.Now.AddDays(_options.ExpiryDays),
+            expires: DateTime.Now.AddMinutes(_options.ExpiryDays),
             claims: claims,
             signingCredentials: signingCredentials,
             audience: _options.Audience
