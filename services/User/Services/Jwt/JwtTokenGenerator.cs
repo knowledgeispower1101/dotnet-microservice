@@ -22,7 +22,6 @@ public class JwtTokenGenerator(IOptions<JwtSettings> options) : IJwtTokenGenerat
             new(JwtRegisteredClaimNames.Sub, userId.ToString()),
             new(JwtRegisteredClaimNames.GivenName, firstName),
             new(JwtRegisteredClaimNames.FamilyName, lastName),
-            new(JwtRegisteredClaimNames.Email, email),
             new(JwtRegisteredClaimNames.PreferredUsername, username),
         };
 

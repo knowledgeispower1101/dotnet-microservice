@@ -54,7 +54,7 @@ public class AuthService(
         );
 
         string refreshToken = _refreshTokens.Generate();
-        // await _refreshTokenStore.SaveAsync(user.Id, refreshToken);
+        await _refreshTokenStore.SaveAsync(user.Id, refreshToken);
 
         var loginResponse = new LoginResponse(
             user.Id,
@@ -134,11 +134,9 @@ public class AuthService(
 
         var token = value["Bearer ".Length..].Trim();
 
-        if (string.IsNullOrWhiteSpace(token))
-            throw new BadRequestException("Empty token");
+        if (string.IsNullOrWhiteSpace(token)) throw new BadRequestException("Empty token");
 
         bool isValid = _jwtTokenGenerator.ValidateToken(token);
-        _logger.LogInformation(isValid.ToString());
         return Task.FromResult(isValid);
     }
 }

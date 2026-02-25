@@ -11,6 +11,7 @@ using User.Interfaces;
 using User.Services;
 using User.Services.Authentication;
 using User.Services.Jwt;
+using User.Services.RefreshTokens;
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -85,9 +86,6 @@ builder.Services.AddControllers();
 
 var app = builder.Build();
 
-// Ensure DB schema exists on startup (safety net for fresh environments).
-// The postgres/init-user.sql script handles this for Docker; EnsureCreated()
-// is a no-op when tables already exist.
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();

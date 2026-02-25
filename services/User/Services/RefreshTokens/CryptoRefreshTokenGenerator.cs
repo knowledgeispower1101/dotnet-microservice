@@ -1,7 +1,7 @@
 using System.Security.Cryptography;
 using User.Interfaces;
 
-namespace User.Services.Authentication;
+namespace User.Services.RefreshTokens;
 
 public class CryptoRefreshTokenGenerator : IRefreshTokens
 {
